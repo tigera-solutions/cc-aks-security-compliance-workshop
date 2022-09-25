@@ -33,12 +33,7 @@ Calico provides methods to enable fine-grained access controls between your micr
 
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
-|1.1, 1.1.4, 1.1.6, 1.2.1, 1.2.2, 1.2.3 | Install and maintain a firewall configuration to protect cardholder data | • Identify everything covered by PCI
-requirements with a well-defined label
-(e.g. PCI=true)
-• Block all traffic between PCI and non-PCI
-workloads
-• Whitelist all traffic within PCI workloads |
+|1.1, 1.1.4, 1.1.6, 1.2.1, 1.2.2, 1.2.3 | Install and maintain a firewall configuration to protect cardholder data | • Identify everything covered by PCI requirements with a well-defined label (e.g. PCI=true) • Block all traffic between PCI and non-PCI workloads • Whitelist all traffic within PCI workloads |
 
 
 ## Demo Preparation Config
