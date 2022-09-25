@@ -35,6 +35,69 @@ Calico provides methods to enable fine-grained access controls between your micr
 | --- | --- | --- |
 |1.1, 1.1.4, 1.1.6, 1.2.1, 1.2.2, 1.2.3 | Install and maintain a firewall configuration to protect cardholder data | • Identify everything covered by PCI requirements with a well-defined label (e.g. PCI=true)<br>• Block all traffic between PCI and non-PCI workloads<br>• Whitelist all traffic within PCI workloads |
 
+--- 
+Scenario of microsegmentation using label PCI = true on a namespace
+---
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+|1.1.2, 1.1.3| Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram
+for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
+
+---
+Demo - Service Graph and flow visualizer
+---
+
+
+
+
+## Microsegmentation
+
+Calico eliminates the risks associated with lateral movement in the cluster to prevent access to sensitive data and other assets. Calico provides a unified, cloud-native segmentation model and single policy framework that works seamlessly across multiple application and workload environments. It enables faster response to security threats
+with a cloud-native architecture that can dynamically enforce security policy changes across cloud environments in milliseconds in response to an attack.
+
+
+## IDS/IPS
+
+Calico pinpoints the source of malicious activity, uses machine learning to identify anomalies, creates a security moat
+around critical workloads, deploys honeypods to capture zero-day attacks, and automatically quarantines potentially
+malicious workloads to thwart an attack. It monitors inbound and outbound traffic (north-south) and east-west traffic
+that is traversing the cluster environment. Calico provides threat feed integration and custom alerts, and can be
+configured to trigger automatic remediation.
+
+
+
+## Policy lifecycle management
+
+
+With Calico, teams can create, preview, and deploy security policies based on the characteristics and metadata
+of a workload. These policies can provide an automated and scalable way to manage and isolate workloads for
+security and compliance, in adherence with PCI compliance requirements. You can automate a validation step that
+ensures your security policy works properly before being committed. Calico can deploy your policies in a “staged”
+mode that will display which traffic is being allowed or denied before the policy rule is enforced. The policy can then
+be committed if it is operating properly. This step avoids any potential problems caused by incorrect, incomplete, or
+conflicting security policy definitions.
+
+
+## Encryption
+
+Calico’s data-in-transit encryption provides category-leading performance and lower CPU utilization than legacy
+approaches based on IPsec and OpenVPN tunneling protocols. No matter where a threat originates, data encrypted
+by Calico is unreadable to anyone except the legitimate keyholder, thus protecting sensitive data should a perimeter
+breach occur. It enables compliance with corporate and regulatory data protection requirements, such as PCI, that
+specify the use of encryption. Calico’s encryption is 6X faster than any other solution on the market.
+
+
+
+## Compliance Reports
+
+Continuous compliance means employing a continual audit that shows what traffic was allowed in your infrastructure,
+what traffic was denied and why, and logs of who was trying to change what and whether those changes went into
+effect. Continuous compliance gives teams the ability to pinpoint any point in time and say with reasonable certainty
+whether the organization was in compliance—and provide documentation to prove it. Calico’s compliance reports
+visually describe the security controls in place in an easy-to-understand policy view. Calico also shows all workloads
+that are in-scope and out-of-scope with your policy.
+
 
 ## Demo Preparation Config
 
