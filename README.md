@@ -36,16 +36,20 @@ Calico provides methods to enable fine-grained access controls between your micr
 |1.1, 1.1.4, 1.1.6, 1.2.1, 1.2.2, 1.2.3 | Install and maintain a firewall configuration to protect cardholder data | • Identify everything covered by PCI requirements with a well-defined label (e.g. PCI=true)<br>• Block all traffic between PCI and non-PCI workloads<br>• Whitelist all traffic within PCI workloads |
 
 --- 
+
 Scenario of microsegmentation using label PCI = true on a namespace
+
 ---
+
 
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
-|1.1.2, 1.1.3| Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram
-for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
+|1.1.2, 1.1.3| Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
 
 ---
+
 Demo - Service Graph and flow visualizer
+
 ---
 
 
