@@ -15,16 +15,30 @@ You will come away from this workshop with an understanding of how others in you
 
 If you don't have an AKS cluster created for this workshop, we recommend you create one. You can follow the steps here to create a Calico Cloud compatible AKS cluster to follow along with this workshop.
 
-   - [AKS Azure](./aks-azurecni.md)
+   - [Azure AKS Cluster Creation - Azure CNI for Calico Cloud](./aks-azurecni.md)
    
    > **Connect your cluster to** [Calico Cloud](https://calicocloud.io)
 
 ---
 
-## 
+## How Calico supports PCI compliance requirements
+
+Tigera’s solutions, Calico Cloud and Calico Enterprise, enable north-south controls such as egress access, east-west controls such as microsegmentation, and enterprise security controls, policy enforcement, and compliance reporting across all Kubernetes distributions in both hybrid and multi-cloud environments. Calico provides the following features to help achieve PCI compliance.
 
 
+## Access controls
 
+Calico provides methods to enable fine-grained access controls between your microservices and external databases, cloud services, APIs, and other applications that are protected behind a firewall. You can enforce controls from within the cluster using DNS egress policies, from a firewall outside the cluster using the egress gateway. Controls are applied on a fine-grained, per-pod basis.
+
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+|1.1, 1.1.4, 1.1.6, 1.2.1, 1.2.2, 1.2.3 | Install and maintain a firewall configuration to protect cardholder data | • Identify everything covered by PCI
+requirements with a well-defined label
+(e.g. PCI=true)
+• Block all traffic between PCI and non-PCI
+workloads
+• Whitelist all traffic within PCI workloads |
 
 
 ## Demo Preparation Config
