@@ -43,8 +43,8 @@ Scenario of microsegmentation using label PCI = true on a namespace
 
 
 | PCI Control # | Requirements| How Calico meets this requirements |
-| - | --- | --- |
-| <p> 1.1.2, 1.1.3 </p>| Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
+| --- | --- | --- |
+| <nobr> 1.1.2, 1.1.3 </nobr>| Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
 
 ---
 
