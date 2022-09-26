@@ -248,22 +248,7 @@ We recommend that you create a global default deny policy after you complete wri
    kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/east-west-traffic.yaml
    ```
 
-3. Convert the staged global network policy to an enforced policy.
-
-   ```yaml
-   kubectl create -f - <<-EOF
-   apiVersion: projectcalico.org/v3
-   kind: GlobalNetworkPolicy
-   metadata:
-     name: default-deny
-   spec:
-     order: 2000
-     selector: "projectcalico.org/namespace in {'dev','default'}"
-     types:
-     - Ingress
-     - Egress
-   EOF
-   ```
+3. Use the Calico Cloud GUI to enforce the default-deny staged policy. After enforcing a staged policy, it takes effect immediatelly. The default-deny policy will start to actually deny traffic.
    
 ---
 
