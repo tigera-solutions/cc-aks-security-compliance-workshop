@@ -21,6 +21,14 @@ If you don't have an AKS cluster created for this workshop, we recommend you cre
 
 ---
 
+## Configure your cluster and Install de applications
+
+Configure Calico parameters for a quicker visualization of the changes done during the workshop, and install and configure demo applications.
+
+- [Configure your cluster and Install de applications] (./config-demo-apps.md)
+
+---
+
 ## How Calico supports PCI compliance requirements
 
 Tigera’s solutions, Calico Cloud and Calico Enterprise, enable north-south controls such as egress access, east-west controls such as microsegmentation, and enterprise security controls, policy enforcement, and compliance reporting across all Kubernetes distributions in both hybrid and multi-cloud environments. Calico provides the following features to help achieve PCI compliance.
@@ -29,6 +37,51 @@ Tigera’s solutions, Calico Cloud and Calico Enterprise, enable north-south con
 ## Access controls
 
 Calico provides methods to enable fine-grained access controls between your microservices and external databases, cloud services, APIs, and other applications that are protected behind a firewall. You can enforce controls from within the cluster using DNS egress policies, from a firewall outside the cluster using the egress gateway. Controls are applied on a fine-grained, per-pod basis.
+
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+| 1.1.2, 1.1.3 | Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
+
+---
+
+Demo - Service Graph and flow visualizer
+
+---
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+| 7.1, 7.2 | Restrict access to cardholder data by business need to know | • Use zero trust security features to implement a default-deny model (access to all data services should be specifically allowed; everything else should be denied)<br>• Follow a zero trust security model and implement least-privilege access (all processes should only be able to access information necessary for their legitimate purpose)
+
+---
+
+Default deny policy
+
+---
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+| 1.3, 1.3.1, 1.3.2, 1.3.3, 1.3.4, 1.3.5, 1.3.7 | Prohibit and/or manage access between internet and CDE | • Whitelist ingress access from the public internet only if the endpoint is providing a publicly accessible service<br>• Whitelist egress access to the public internet from all in-covered components<br>• Protect against forged source IP
+addresses with WireGuard (integrated in Calico)|
+
+---
+
+NetworkSets to whitelist ingress and egress access
+
+---
+
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+| 6.5, 6.6 | Detect and prevent web attacks | • Use policy to implement fine-grained access controls for services |
+
+
+
+
+## Microsegmentation
+
+Calico eliminates the risks associated with lateral movement in the cluster to prevent access to sensitive data and other assets. Calico provides a unified, cloud-native segmentation model and single policy framework that works seamlessly across multiple application and workload environments. It enables faster response to security threats
+with a cloud-native architecture that can dynamically enforce security policy changes across cloud environments in milliseconds in response to an attack.
 
 
 | PCI Control # | Requirements| How Calico meets this requirements |
@@ -42,100 +95,6 @@ Scenario of microsegmentation using label PCI = true on a namespace
 ---
 
 
-| PCI Control # | Requirements| How Calico meets this requirements |
-| --- | --- | --- |
-| 1.1.2, 1.1.3 | Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
-
----
-
-Demo - Service Graph and flow visualizer
-
----
-
-
-| PCI Control # | Requirements| How Calico meets this requirements |
-| --- | --- | --- |
-| 1.1.1, 1.1.5, 1.1.7 | A formal process for approving and testing all network connections and changes to the rule sets | • Use Calico to record and review all policy
-changes that affect connectivity between covered components |
-
----
-
-Policy Change history - 
-
----
-
-
-| PCI Control # | Requirements| How Calico meets this requirements |
-| --- | --- | --- |
-| 1.3, 1.3.1, 1.3.2, 1.3.3, 1.3.4, 1.3.5, 1.3.7 | Prohibit and/or manage access between internet and CDE | • Whitelist ingress access from the publicinternet only if the endpoint is providing a publicly accessible service<br>• Whitelist egress access to the public internet from all in-covered components<br>• Protect against forged source IP
-addresses with WireGuard (integrated in Calico)|
-
-
-
-
-
-| PCI Control # | Requirements| How Calico meets this requirements |
-| --- | --- | --- |
-|
-
-
-
-
-
-
-| PCI Control # | Requirements| How Calico meets this requirements |
-| --- | --- | --- |
-|
-
-
-
-
-
-
-
-
-| PCI Control # | Requirements| How Calico meets this requirements |
-| --- | --- | --- |
-|
-
-
-
-
-
-
-
-| PCI Control # | Requirements| How Calico meets this requirements |
-| --- | --- | --- |
-|
-
-
-
-
-
-
-
-| PCI Control # | Requirements| How Calico meets this requirements |
-| --- | --- | --- |
-|
-
-
-
-
-
-
-
-| PCI Control # | Requirements| How Calico meets this requirements |
-| --- | --- | --- |
-|
-
-
-
-## Microsegmentation
-
-Calico eliminates the risks associated with lateral movement in the cluster to prevent access to sensitive data and other assets. Calico provides a unified, cloud-native segmentation model and single policy framework that works seamlessly across multiple application and workload environments. It enables faster response to security threats
-with a cloud-native architecture that can dynamically enforce security policy changes across cloud environments in milliseconds in response to an attack.
-
-
 ## IDS/IPS
 
 Calico pinpoints the source of malicious activity, uses machine learning to identify anomalies, creates a security moat
@@ -145,6 +104,16 @@ that is traversing the cluster environment. Calico provides threat feed integrat
 configured to trigger automatic remediation.
 
 
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+| 5.1, 5.2, 5.3, 5.4, 10.6, 11.4 | Protect all systems against malware with Intrusion Detection Systems (IDS)/Intrusion Prevention Systems (IPS) and network monitoring. Regularly update antivirus software. Review logs for anomalous and suspicious activity | • Detect and address anomalies and threats with Calico instead of antivirus software <br>• Report and analyze compliance audit findings with Calico<br>• Automatically quarantine compromised workloads<br>• Get insights into statistical and behavioral
+anomalies with Calico flow logs
+
+---
+
+DPI / IDS
+
+---
 
 ## Policy lifecycle management
 
@@ -158,6 +127,23 @@ be committed if it is operating properly. This step avoids any potential problem
 conflicting security policy definitions.
 
 
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+| 1.1.1, 1.1.5, 1.1.7 | A formal process for approving and testing all network connections and changes to the rule sets | • Use Calico to record and review all policy
+changes that affect connectivity between covered components |
+
+---
+
+Policy Change history - 
+
+---
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+| 10.1, 10.2, 10.3 | Implement and record audit trail for all access to system components | • Record all policy changes that impact connectivity to/from in-scope assets with
+Calico |
+
+
 ## Encryption
 
 Calico’s data-in-transit encryption provides category-leading performance and lower CPU utilization than legacy
@@ -166,6 +152,9 @@ by Calico is unreadable to anyone except the legitimate keyholder, thus protecti
 breach occur. It enables compliance with corporate and regulatory data protection requirements, such as PCI, that
 specify the use of encryption. Calico’s encryption is 6X faster than any other solution on the market.
 
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+| 4.1 | Data-in-transit encryption to safeguard sensitive data | • Secure and encrypt data in transit for all covered workloads|
 
 
 ## Compliance Reports
@@ -176,6 +165,13 @@ effect. Continuous compliance gives teams the ability to pinpoint any point in t
 whether the organization was in compliance—and provide documentation to prove it. Calico’s compliance reports
 visually describe the security controls in place in an easy-to-understand policy view. Calico also shows all workloads
 that are in-scope and out-of-scope with your policy.
+
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+| 2.2, 2.4 | Inventory the systems and make sure they meet industry-accepted system-hardening standards | • Keep a running inventory of all ephemeral workloads along with their networking and security controls<br>• Leverage inventory report and CIS|
+
+
 
 
 ## Demo Preparation Config
