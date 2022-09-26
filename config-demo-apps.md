@@ -198,32 +198,6 @@
    EOF
    ```
 
-   c. HTTP Connections global Alerts
-
-   ```yaml
-   kubectl apply -f - <<-EOF
-   apiVersion: projectcalico.org/v3
-   kind: GlobalAlert
-   metadata:
-     name: http.connections
-   spec:
-     description: "HTTP connections to a target namespace"
-     summary: "HTTP connections from ${source_namespace}/${source_name_aggr} to default/${dest_name_aggr}"
-     severity: 50
-     dataSet: flows 
-     query: dest_namespace="default" AND dest_port=80
-     aggregateBy: 
-       - source_namespace
-       - dest_name_aggr
-       - source_name_aggr
-     field: count
-     metric: sum
-     condition: gte
-     threshold: 1
-     EOF
-     ```
-      
-
 3. Confirm the global compliance report and global alert are running.
     
    ```bash
