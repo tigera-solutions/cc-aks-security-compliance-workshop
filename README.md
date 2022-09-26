@@ -612,19 +612,12 @@ conflicting security policy definitions.
 
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
-| 1.1.1, 1.1.5, 1.1.7 | A formal process for approving and testing all network connections and changes to the rule sets | • Use Calico to record and review all policy
-changes that affect connectivity between covered components |
+| 1.1.1, 1.1.5, 1.1.7 | A formal process for approving and testing all network connections and changes to the rule sets | • Use Calico to record and review all policy changes that affect connectivity between covered components |
+| 10.1, 10.2, 10.3 | Implement and record audit trail for all access to system components | • Record all policy changes that impact connectivity to/from in-scope assets with Calico |
 
----
+1. Open a policy and check the change log
 
-Policy Change history - 
-
----
-
-| PCI Control # | Requirements| How Calico meets this requirements |
-| --- | --- | --- |
-| 10.1, 10.2, 10.3 | Implement and record audit trail for all access to system components | • Record all policy changes that impact connectivity to/from in-scope assets with
-Calico |
+![change-log](https://user-images.githubusercontent.com/104035488/192361358-33ad8ab4-0c86-4892-a775-4d3bfc72ba38.gif)
 
 
 ## Encryption
