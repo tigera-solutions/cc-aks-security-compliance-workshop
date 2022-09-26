@@ -149,10 +149,10 @@
 
    ```bash
    #deploy dev app stack
-   kubectl apply -f ./manifests/dev-app-manifest.yaml
+   kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/dev-app-manifest.yaml
     
    #deploy Online Boutique app stack
-   kubectl apply -f ./manifests/kubernetes-manifests.yaml
+   kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/kubernetes-manifests.yaml
    ```
 
 ## STEP 4 - Create the Global Reports and the Global Alerts
@@ -208,36 +208,102 @@
 
 2. Deploy global alerts.
 
-    >The alerts will be explored in a later lab.
+   >The alerts will be explored in a later lab.
 
-    ```bash
-    kubectl apply -f demo/alerts/
-    ```
+   a. Unsanctioned DNS endpoint global alert
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: GlobalAlert
+   metadata:
+     name: dns.unsanctioned.access
+   spec:
+     description: "Pod attempted to access google.com domain"
+     summary: "[dns] pod ${client_namespace}/${client_name_aggr} attempted to access '${qname}'"
+     severity: 100
+     dataSet: dns
+     period: 1m
+     lookback: 1m
+     query: '(qname = "www.google.com" OR qname = "google.com")'
+     aggregateBy: [client_namespace, client_name_aggr, qname]
+     metric: count
+     condition: gt
+     threshold: 0
+   EOF
+   ```
+
+   b. Lateral movement global alert
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: GlobalAlert
+   metadata:
+     name: network.lateral.access
+   spec:
+     description: "Alerts when pods with a specific label (security=strict) accessed by other workloads from other namespaces"
+     summary: "[flows] [lateral movement] ${source_namespace}/${source_name_aggr} has accessed ${dest_namespace}/${dest_name_aggr} with label security=strict"
+     severity: 100
+     period: 1m
+     lookback: 1m
+     dataSet: flows
+     query: '("dest_labels.labels"="security=strict" AND "dest_namespace"="dev") AND "source_namespace"!="dev" AND "proto"="tcp" AND (("action"="allow" AND ("reporter"="dst" OR    "reporter"="src")) OR ("action"="deny" AND "reporter"="src"))'
+     aggregateBy: [source_namespace, source_name_aggr, dest_namespace, dest_name_aggr]
+     field: num_flows
+     metric: sum
+     condition: gt
+     threshold: 0
+   EOF
+   ```
+
+   c. HTTP Connections global Alerts
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: GlobalAlert
+   metadata:
+     name: http.connections
+   spec:
+     description: "HTTP connections to a target namespace"
+     summary: "HTTP connections from ${source_namespace}/${source_name_aggr} to default/${dest_name_aggr}"
+     severity: 50
+     dataSet: flows 
+     query: dest_namespace="default" AND dest_port=80
+     aggregateBy: 
+       - source_namespace
+       - dest_name_aggr
+       - source_name_aggr
+     field: count
+     metric: sum
+     condition: gte
+     threshold: 1
+     EOF
+     ```
+      
 
 3. Confirm the global compliance report and global alert are running.
     
-    ```bash
-    kubectl get globalreport
+   ```bash
+   kubectl get globalreport
+   kubectl get globalalert
+   ``` 
 
-    kubectl get globalalert
-    ``` 
+   The output looks like as below:
 
-
-    The output looks like as below:
-
-    ```bash
-    NAME                      CREATED AT 
-    cis-results               2022-09-01T15:42:33Z
-    cluster-inventory         2022-09-01T15:42:33Z
-    cluster-network-access    2022-09-01T15:42:33Z
-    cluster-policy-audit      2022-09-01T15:42:33Z
-    
-
-    NAME                      CREATED AT
-    dns.unsanctioned.access   2022-09-01T15:42:40Z
-    network.lateral.access    2022-09-01T15:42:40Z
-    policy.globalnetworkset   2022-09-01T15:42:39Z
-    ```
+   ```bash
+   NAME                      CREATED AT 
+   cis-results               2022-09-01T15:42:33Z
+   cluster-inventory         2022-09-01T15:42:33Z
+   cluster-network-access    2022-09-01T15:42:33Z
+   cluster-policy-audit      2022-09-01T15:42:33Z
+   
+   NAME                      CREATED AT
+   dns.unsanctioned.access   2022-09-01T15:42:40Z
+   network.lateral.access    2022-09-01T15:42:40Z
+   policy.globalnetworkset   2022-09-01T15:42:39Z
+   ```
 
 --- 
-[:leftwards_arrow_with_hook: Back to Main](./README.md)
+[:leftwards_arrow_with_hook: Back to Main](/README.md)
