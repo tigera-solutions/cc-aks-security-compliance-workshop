@@ -252,7 +252,8 @@ We recommend that you create a global default deny policy after you complete wri
    
 ---
 
-### NetworkSets to whitelist ingress and egress access
+### Use NetworkSets to whitelist ingress and egress access
+
 
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
