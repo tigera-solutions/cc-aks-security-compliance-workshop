@@ -137,6 +137,7 @@ We recommend that you create a global default deny policy after you complete wri
    Apply network policies to your application with explicity allow and deny control.
 
    ```yaml
+   kubectl apply -f - <<-EOF   
    apiVersion: projectcalico.org/v3
    kind: NetworkPolicy
    metadata:
@@ -154,6 +155,7 @@ We recommend that you create a global default deny policy after you complete wri
            selector: app == "nginx"
      types:
        - Egress
+   EOF
    ```
 
    Test connectivity with policies in place.
