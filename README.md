@@ -49,8 +49,6 @@ Calico provides methods to enable fine-grained access controls between your micr
 | --- | --- | --- |
 | 1.1.2, 1.1.3 | Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
 
-
-
 Connect to Calico Cloud GUI. From the menu select `Service Graph > Default`. Explore the options.
 
 ![service_graph](https://user-images.githubusercontent.com/104035488/192303379-efb43faa-1e71-41f2-9c54-c9b7f0538b34.gif)
@@ -78,15 +76,15 @@ a. Test connectivity between workloads within each namespace, use dev and hipste
    # test connectivity within dev namespace, the expected result is "HTTP/1.1 200 OK" 
    kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://nginx-svc 2>/dev/null | grep -i http'
    
-   # test connectivity within hipstershop namespace in 8080 port
-   kubectl -n hipstershop exec -it $(kubectl -n default get po -l app=frontend -ojsonpath='{.items[0].metadata.name}') \
+   # test connectivity within default namespace in 8080 port
+   kubectl exec -it $(kubectl -n default get po -l app=frontend -ojsonpath='{.items[0].metadata.name}') \
    -c server -- sh -c 'nc -zv recommendationservice 8080'
    ```
 
 b. Test connectivity across namespaces dev/centosand hipstershop/frontend.
 
    ```bash
-   # test connectivity from dev namespace to hipstershop namespace, the expected result is "HTTP/1.1 200 OK"
+   # test connectivity from dev namespace to default namespace, the expected result is "HTTP/1.1 200 OK"
    kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://frontend.default 2>/dev/null | grep -i http'
    ```
 
