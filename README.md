@@ -13,7 +13,7 @@ You will come away from this workshop with an understanding of how others in you
 
 ## Create a cluster an connect it to Calico Cloud.
 
-If you don't have an AKS cluster created for this workshop, we recommend you create one. You can follow the steps here to create a Calico Cloud compatible AKS cluster to follow along with this workshop.
+If you don't have an AKS cluster created for this workshop, we recommend you create one. You can use the steps described here to create a Calico Cloud compatible AKS cluster to follow along with this workshop.
 
    - [Azure AKS Cluster Creation - Azure CNI for Calico Cloud](./aks-azurecni.md)
    
