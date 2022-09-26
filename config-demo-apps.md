@@ -25,146 +25,135 @@
 
 1. Deploy policy tiers.
 
-    We are going to deploy sample tiered policies in the cluster some .
+   We are going to deploy sample tiered policies in the cluster some .
 
-    You can copy and past the command below:
+   You can copy and past the command below:
 
-    ```yaml
-    kubectl apply -f - <<-EOF
-    apiVersion: projectcalico.org/v3
-    kind: Tier
-    metadata:
-      name: security
-    spec:
-      order: 500
-    ---
-    apiVersion: projectcalico.org/v3
-    kind: Tier
-    metadata:
-      name: platform
-    spec:
-      order: 700
-    EOF
-    ```
-    
-    or run:
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: Tier
+   metadata:
+     name: security
+   spec:
+     order: 500
+   ---
+   apiVersion: projectcalico.org/v3
+   kind: Tier
+   metadata:
+     name: platform
+   spec:
+     order: 700
+   EOF
+   ```
 
-    ```bash
-    kubectl apply -f demo/setup/tiers/
-    ```
-    This will add tiers `security`, and `platform` to the Calico cluster.
+   This will add tiers `security`, and `platform` to the Calico cluster.
     
 
 2. Deploy base policy.
 
-    Sample policies are deployed for allowing DNS access, logging and PCI segementation.
+   Sample policies are deployed for allowing DNS access, logging and PCI segementation.
 
-    You can copy and past the command below:
+   You can copy and past the command below:
 
-    ```yaml
-    kubectl apply -f - <<-EOF
-    apiVersion: projectcalico.org/v3
-    kind: GlobalNetworkPolicy
-    metadata:
-      name: platform.allow-kube-dns
-    spec:
-      tier: platform
-      order: 200
-      selector: projectcalico.org/namespace != "acme"
-      egress:
-        - action: Allow
-          source: {}
-          destination:
-            selector: k8s-app == "kube-dns"
-      types:
-        - Egress
-    ---
-    apiVersion: projectcalico.org/v3
-    kind: GlobalNetworkPolicy
-    metadata:
-      name: platform.pass
-    spec:
-      tier: platform
-      order: 2000
-      ingress:
-        - action: Pass
-      egress:
-        - action: Pass
-      doNotTrack: false
-      applyOnForward: false
-      preDNAT: false
-      types:
-        - Ingress
-        - Egress
-    ---
-    apiVersion: projectcalico.org/v3
-    kind: GlobalNetworkPolicy
-    metadata:
-      name: security.pass
-    spec:
-      tier: security
-      order: 2000
-      ingress:
-        - action: Pass
-      egress:
-        - action: Pass
-      types:
-        - Ingress
-        - Egress
-    ---
-    apiVersion: projectcalico.org/v3
-    kind: GlobalNetworkPolicy
-    metadata:
-      name: security.pci-whitelist
-    spec:
-      tier: security
-      order: 300
-      selector: projectcalico.org/namespace != "acme"
-      ingress:
-      - action: Deny
-        source:
-          serviceAccounts:
-            selector: PCI != "true"
-        destination:
-          serviceAccounts:
-            selector: PCI == "true"
-      - action: Pass
-        source:
-        destination:
-      egress:
-      - action: Deny
-        source:
-          serviceAccounts:
-            selector: PCI == "true"
-        destination:
-          serviceAccounts:
-            selector: PCI != "true"
-      - action: Pass
-        source:
-        destination:
-      types:
-      - Ingress
-      - Egress
-    EOF
-    ```
-     or run:
-
-    ```bash
-    kubectl apply -f demo/setup/stage0/
-    ```
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: GlobalNetworkPolicy
+   metadata:
+     name: platform.allow-kube-dns
+   spec:
+     tier: platform
+     order: 200
+     selector: projectcalico.org/namespace != "acme"
+     egress:
+       - action: Allow
+         source: {}
+         destination:
+           selector: k8s-app == "kube-dns"
+     types:
+       - Egress
+   ---
+   apiVersion: projectcalico.org/v3
+   kind: GlobalNetworkPolicy
+   metadata:
+     name: platform.pass
+   spec:
+     tier: platform
+     order: 2000
+     ingress:
+       - action: Pass
+     egress:
+       - action: Pass
+     doNotTrack: false
+     applyOnForward: false
+     preDNAT: false
+     types:
+       - Ingress
+       - Egress
+   ---
+   apiVersion: projectcalico.org/v3
+   kind: GlobalNetworkPolicy
+   metadata:
+     name: security.pass
+   spec:
+     tier: security
+     order: 2000
+     ingress:
+       - action: Pass
+     egress:
+       - action: Pass
+     types:
+       - Ingress
+       - Egress
+   ---
+   apiVersion: projectcalico.org/v3
+   kind: GlobalNetworkPolicy
+   metadata:
+     name: security.pci-whitelist
+   spec:
+     tier: security
+     order: 300
+     selector: projectcalico.org/namespace != "acme"
+     ingress:
+     - action: Deny
+       source:
+         serviceAccounts:
+           selector: PCI != "true"
+       destination:
+         serviceAccounts:
+           selector: PCI == "true"
+     - action: Pass
+       source:
+       destination:
+     egress:
+     - action: Deny
+       source:
+         serviceAccounts:
+           selector: PCI == "true"
+       destination:
+         serviceAccounts:
+           selector: PCI != "true"
+     - action: Pass
+       source:
+       destination:
+     types:
+     - Ingress
+     - Egress
+   EOF
+   ```
 
 ## STEP 3 - Install the demo applications
 
 1. Deploy demo applications.
 
-    ```bash
-    #deploy dev app stack
-    kubectl apply -f ./manifests/dev-app-manifest.yaml
+   ```bash
+   #deploy dev app stack
+   kubectl apply -f ./manifests/dev-app-manifest.yaml
     
-    #deploy Online Boutique app stack
-    kubectl apply -f ./manifests/kubernetes-manifests.yaml
-
-    ```
+   #deploy Online Boutique app stack
+   kubectl apply -f ./manifests/kubernetes-manifests.yaml
+   ```
 
 ## STEP 4 - Create the Global Reports and the Global Alerts
 
