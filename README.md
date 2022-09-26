@@ -165,19 +165,20 @@ We recommend that you create a global default deny policy after you complete wri
    ```bash
    # test connectivity within dev namespace, the expected result is "HTTP/1.1 200 OK"
    kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://nginx-svc 2>/dev/null | grep -i http'
-   The connections within namespace hipstershop should be allowed as usual.
    ```
-
+   
+   The connections within namespace default should be allowed as usual.
+   
    ```bash
-   # test connectivity within hipstershop namespace in 8080 port
+   # test connectivity within default namespace in 8080 port
    kubectl exec -it $(kubectl get po -l app=frontend -ojsonpath='{.items[0].metadata.name}') \
    -c server -- sh -c 'nc -zv recommendationservice 8080'
    ``` 
 
-   b. The connections across dev/centos pod and hipstershop/frontend pod should be blocked by the application policy.
+   b. The connections across dev/centos pod and default/frontend pod should be blocked by the application policy.
    
    ```bash   
-   # test connectivity from dev namespace to hipstershop namespace, the expected result is "command terminated with exit code 1"
+   # test connectivity from dev namespace to default namespace, the expected result is "command terminated with exit code 1"
    kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://frontend.default 2>/dev/null | grep -i http'
    ```
 
@@ -186,8 +187,12 @@ We recommend that you create a global default deny policy after you complete wri
    ```bash   
    # test connectivity from dev namespace to the Internet, the expected result is "command terminated with exit code 1"
    kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://www.google.com 2>/dev/null | grep -i http'
+   ```
+   
+   ```bash
    # test connectivity from default namespace to the Internet, the expected result is "HTTP/1.1 200 OK"
-   kubectl exec -it curl-demo -- sh -c 'curl -m3 -sI www.google.com 2>/dev/null | grep -i http'
+   kubectl exec -it $(kubectl get po -l app=loadgenerator -ojsonpath='{.items[0].metadata.name}') \
+   -c main -- sh -c 'curl -m3 -sI http://www.google.com 2>/dev/null | grep -i http'
    ```
 
    Implement explicitic policy to allow egress access from a workload in one namespace/pod, e.g. dev/centos, to hipstershop/frontend.
