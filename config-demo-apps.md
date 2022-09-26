@@ -208,16 +208,14 @@
    The output looks like as below:
 
    ```bash
-   NAME                      CREATED AT 
-   cis-results               2022-09-01T15:42:33Z
-   cluster-inventory         2022-09-01T15:42:33Z
-   cluster-network-access    2022-09-01T15:42:33Z
-   cluster-policy-audit      2022-09-01T15:42:33Z
-   
+   NAME                     CREATED AT
+   cis-results              2022-09-26T21:37:32Z
+   cluster-inventory        2022-09-26T21:37:33Z
+   cluster-network-access   2022-09-26T21:37:33Z
+   cluster-policy-audit     2022-09-26T21:37:33Z
    NAME                      CREATED AT
-   dns.unsanctioned.access   2022-09-01T15:42:40Z
-   network.lateral.access    2022-09-01T15:42:40Z
-   policy.globalnetworkset   2022-09-01T15:42:39Z
+   dns.unsanctioned.access   2022-09-26T21:40:23Z
+   network.lateral.access    2022-09-26T21:40:30Z
    ```
 
 --- 
