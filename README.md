@@ -43,9 +43,9 @@ Calico provides methods to enable fine-grained access controls between your micr
 | --- | --- | --- |
 | 1.1.2, 1.1.3 | Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
 
----
+### Service Graph adn Flow Vizualizer
 
-Demo - Service Graph and flow visualizer
+![service_graph](https://user-images.githubusercontent.com/104035488/192303379-efb43faa-1e71-41f2-9c54-c9b7f0538b34.gif)
 
 ---
 
