@@ -687,24 +687,3 @@ that are in-scope and out-of-scope with your policy.
 2. Explore the Compliance Reports.
 
 ![cis-benchmark](https://user-images.githubusercontent.com/104035488/192358645-ab77c305-0a9d-4242-b37f-972dc22b4d84.gif)
-
-
-## Demo Preparation Config
-
-1. Accelerate the log export.
-
-   ```bash
-   kubectl patch felixconfiguration default -p '{"spec":{"flowLogsFlushInterval":"15s"}}'
-   kubectl patch felixconfiguration default -p '{"spec":{"flowLogsFileAggregationKindForAllowed":1}}'
-   kubectl patch felixconfiguration default -p '{"spec":{"flowLogsFileAggregationKindForDenied":0}}'
-   kubectl patch felixconfiguration default -p '{"spec":{"dnsLogsFileEnabled":true}}'
-   kubectl patch felixconfiguration default -p '{"spec":{"dnsLogsFileAggregationKind":0}}'
-   kubectl patch felixconfiguration default -p '{"spec":{"dnsLogsFlushInterval":"15s"}}'
-   kubectl patch felixconfiguration default -p '{"spec":{"l7LogsFlushInterval":"15s"}}'
-   ```
-
-
-
-
-
-
