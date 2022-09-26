@@ -96,6 +96,12 @@
    kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/kubernetes-manifests.yaml
    ```
 
+2. Install curl in the loadgenerator.
+
+   ```bash
+   kubectl exec -it $(kubectl get po -l app=loadgenerator -ojsonpath='{.items[0].metadata.name}') -c main -- sh -c 'apt-get update && apt install curl -y'
+   ```
+
 ## STEP 4 - Create the Global Reports and the Global Alerts
 
 1. Deploy compliance reports which schedule as cronjob in every 15 min for cluster report and a cis benchmark report.
