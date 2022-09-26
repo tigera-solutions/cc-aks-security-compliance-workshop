@@ -42,7 +42,7 @@ Scenario of microsegmentation using label PCI = true on a namespace
 ---
 
 
-| <p style="display: inline;">PCI Control #</p> | Requirements| How Calico meets this requirements |
+| PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
 | 1.1.2, 1.1.3 | Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
 
@@ -53,33 +53,80 @@ Demo - Service Graph and flow visualizer
 ---
 
 
-| abc | defghi |
-:-: | -----------:
-bar | baz
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+| 1.1.1, 1.1.5, 1.1.7 | A formal process for approving and testing all network connections and changes to the rule sets | • Use Calico to record and review all policy
+changes that affect connectivity between covered components |
+
+---
+
+Policy Change history - 
+
+---
 
 
-| f\|oo  |
-| ------ |
-| b `\|` az |
-| b **\|** im |
-
-| abc | def |
-| --- | --- |
-| bar | baz |
-> bar
-
-| abc | def |
-| --- |
-| bar |
-
-| abc | def |
-| --- | --- |
-| bar |
-| bar | baz | boo |
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+| 1.3, 1.3.1, 1.3.2, 1.3.3, 1.3.4, 1.3.5, 1.3.7 | Prohibit and/or manage access between internet and CDE | • Whitelist ingress access from the publicinternet only if the endpoint is providing a publicly accessible service<br>• Whitelist egress access to the public internet from all in-covered components<br>• Protect against forged source IP
+addresses with WireGuard (integrated in Calico)|
 
 
 
 
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+|
+
+
+
+
+
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+|
+
+
+
+
+
+
+
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+|
+
+
+
+
+
+
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+|
+
+
+
+
+
+
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+|
+
+
+
+
+
+
+
+| PCI Control # | Requirements| How Calico meets this requirements |
+| --- | --- | --- |
+|
 
 
 
