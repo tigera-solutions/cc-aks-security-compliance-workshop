@@ -70,7 +70,7 @@ A global default deny policy ensures that unwanted traffic (ingress and egress) 
 
 By default, all traffic is allowed between the pods in a cluster. First, let's test connectivity between application components and across application stacks. All of these tests should succeed as there are no policies in place.
 
-a. Test connectivity between workloads within each namespace, use dev and hipstershop namespaces as example
+a. Test connectivity between workloads within each namespace, use dev and default namespaces as example
 
    ```bash
    # test connectivity within dev namespace, the expected result is "HTTP/1.1 200 OK" 
@@ -83,7 +83,7 @@ a. Test connectivity between workloads within each namespace, use dev and hipste
    -c server -- sh -c 'nc -zv recommendationservice 8080'
    ```
 
-b. Test connectivity across namespaces dev/centosand hipstershop/frontend.
+b. Test connectivity across namespaces dev/centos and default/frontend.
 
    ```bash
    # test connectivity from dev namespace to default namespace, the expected result is "HTTP/1.1 200 OK"
