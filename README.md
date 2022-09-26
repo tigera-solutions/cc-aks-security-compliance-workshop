@@ -35,6 +35,8 @@ Tigera’s solutions, Calico Cloud and Calico Enterprise, enable north-south con
 - [Download the whitepaper: PCI compliance for Hosts, VMs, containers, and Kubernetes](https://www.tigera.io/lp/kubernetes-pci-compliance/)
 - [Download the PCI DSS v4.0 Quick Reference Guide](https://docs-prv.pcisecuritystandards.org/PCI%20DSS/Supporting%20Document/PCI_DSS-QRG-v4_0.pdf)
 
+---
+
 ## Access controls
 
 Calico provides methods to enable fine-grained access controls between your microservices and external databases, cloud services, APIs, and other applications that are protected behind a firewall. You can enforce controls from within the cluster using DNS egress policies, from a firewall outside the cluster using the egress gateway. Controls are applied on a fine-grained, per-pod basis.
