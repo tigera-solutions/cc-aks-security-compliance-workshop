@@ -33,50 +33,457 @@ Configure Calico parameters for a quicker visualization of the changes done duri
 
 Tigera’s solutions, Calico Cloud and Calico Enterprise, enable north-south controls such as egress access, east-west controls such as microsegmentation, and enterprise security controls, policy enforcement, and compliance reporting across all Kubernetes distributions in both hybrid and multi-cloud environments. Calico provides the following features to help achieve PCI compliance.
 
+- [Download the whitepaper: PCI compliance for Hosts, VMs, containers, and Kubernetes](https://www.tigera.io/lp/kubernetes-pci-compliance/)
+- [Download the PCI DSS v4.0 Quick Reference Guide](https://docs-prv.pcisecuritystandards.org/PCI%20DSS/Supporting%20Document/PCI_DSS-QRG-v4_0.pdf)
 
 ## Access controls
 
 Calico provides methods to enable fine-grained access controls between your microservices and external databases, cloud services, APIs, and other applications that are protected behind a firewall. You can enforce controls from within the cluster using DNS egress policies, from a firewall outside the cluster using the egress gateway. Controls are applied on a fine-grained, per-pod basis.
 
+### Service Graph and Flow Visualizer
 
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
 | 1.1.2, 1.1.3 | Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
 
-### Service Graph adn Flow Vizualizer
+Connect to Calico Cloud GUI. From the menu select `Service Graph > Default`. Explore the options.
 
 ![service_graph](https://user-images.githubusercontent.com/104035488/192303379-efb43faa-1e71-41f2-9c54-c9b7f0538b34.gif)
 
+Connect to Calico Cloud GUI. From the menu select `Service Graph > Flow Visualizations`. Explore the options.
+
+
+
 ---
+
+### Zero trust Security
 
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
 | 7.1, 7.2 | Restrict access to cardholder data by business need to know | • Use zero trust security features to implement a default-deny model (access to all data services should be specifically allowed; everything else should be denied)<br>• Follow a zero trust security model and implement least-privilege access (all processes should only be able to access information necessary for their legitimate purpose)
 
+A global default deny policy ensures that unwanted traffic (ingress and egress) is denied by default. Pods without policy (or incorrect policy) are not allowed traffic until appropriate network policy is defined. Although the staging policy tool will help you find incorrect and missing policy, a global deny helps mitigate against other lateral malicious attacks.
+
+By default, all traffic is allowed between the pods in a cluster. First, let's test connectivity between application components and across application stacks. All of these tests should succeed as there are no policies in place.
+
+a. Test connectivity between workloads within each namespace, use dev and hipstershop namespaces as example
+
+   ```bash
+   # test connectivity within dev namespace, the expected result is "HTTP/1.1 200 OK" 
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://nginx-svc 2>/dev/null | grep -i http'
+   
+   # test connectivity within hipstershop namespace in 8080 port
+   kubectl -n hipstershop exec -it $(kubectl -n default get po -l app=frontend -ojsonpath='{.items[0].metadata.name}') \
+   -c server -- sh -c 'nc -zv recommendationservice 8080'
+   ```
+
+b. Test connectivity across namespaces dev/centosand hipstershop/frontend.
+
+   ```bash
+   # test connectivity from dev namespace to hipstershop namespace, the expected result is "HTTP/1.1 200 OK"
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://frontend.default 2>/dev/null | grep -i http'
+   ```
+
+c. Test connectivity from each namespace dev and default to the Internet.
+
+   ```bash
+   # test connectivity from dev namespace to the Internet, the expected result is "HTTP/1.1 200 OK"
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://www.google.com 2>/dev/null | grep -i http'
+
+   # test connectivity from default namespace to the Internet, the expected result is "HTTP/1.1 200 OK"
+   kubectl exec -it curl-demo -- sh -c 'curl -m3 -sI http://www.google.com 2>/dev/null | grep -i http'
+   ```
+
+We recommend that you create a global default deny policy after you complete writing policy for the traffic that you want to allow. Use the stage policy feature to get your allowed traffic working as expected, then lock down the cluster to block unwanted traffic.
+
+1. Create a staged global default deny policy. It will shows all the traffic that would be blocked if it were converted into a deny.
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: StagedGlobalNetworkPolicy
+   metadata:
+     name: default-deny
+   spec:
+     order: 2000
+     selector: "projectcalico.org/namespace in {'dev','default'}"
+     types:
+     - Ingress
+     - Egress
+   EOF
+   ```
+
+   You should be able to view the potential affect of the staged default-deny policy if you navigate to the Dashboard view in the Enterprise Manager UI and look at the Packets by Policy histogram.
+
+   ```bash
+   # make a request across namespaces and view Packets by Policy histogram, the expected result is "HTTP/1.1 200 OK"
+   for i in {1..5}; do kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://frontend.default 2>/dev/null | grep -i http'; sleep 2; done
+   ```
+
+   The staged policy does not affect the traffic directly but allows you to view the policy impact if it were to be enforced. You can see the deny traffic in staged policy.
+
+
+2. Create other network policies to individually allow the traffic shown as blocked in step 1, until no connections are denied.
+  
+   Apply network policies to your application with explicity allow and deny control.
+
+   ```yaml
+   apiVersion: projectcalico.org/v3
+   kind: NetworkPolicy
+   metadata:
+     name: default.centos
+     namespace: dev
+   spec:
+     tier: default
+     order: 800
+     selector: app == "centos"
+     serviceAccountSelector: ''
+     egress:
+       - action: Allow
+         protocol: TCP
+         destination:
+           selector: app == "nginx"
+     types:
+       - Egress
+   ```
+
+   Test connectivity with policies in place.
+
+   a. The only connections between the components within namespaces dev are from centos to nginx, which should be allowed as configured by the policies.
+
+   ```bash
+   # test connectivity within dev namespace, the expected result is "HTTP/1.1 200 OK"
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://nginx-svc 2>/dev/null | grep -i http'
+   The connections within namespace hipstershop should be allowed as usual.
+   ```
+
+   ```bash
+   # test connectivity within hipstershop namespace in 8080 port
+   kubectl exec -it $(kubectl get po -l app=frontend -ojsonpath='{.items[0].metadata.name}') \
+   -c server -- sh -c 'nc -zv recommendationservice 8080'
+   ``` 
+
+   b. The connections across dev/centos pod and hipstershop/frontend pod should be blocked by the application policy.
+   
+   ```bash   
+   # test connectivity from dev namespace to hipstershop namespace, the expected result is "command terminated with exit code 1"
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://frontend.hipstershop 2>/dev/null | grep -i http'
+   ```
+
+   c. Test connectivity from each namespace dev and default to the Internet.
+   
+   ```bash   
+   # test connectivity from dev namespace to the Internet, the expected result is "command terminated with exit code 1"
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://www.google.com 2>/dev/null | grep -i http'
+   # test connectivity from default namespace to the Internet, the expected result is "HTTP/1.1 200 OK"
+   kubectl exec -it curl-demo -- sh -c 'curl -m3 -sI www.google.com 2>/dev/null | grep -i http'
+   ```
+
+   Implement explicitic policy to allow egress access from a workload in one namespace/pod, e.g. dev/centos, to hipstershop/frontend.
+   
+   a. Deploy egress policy between two namespaces dev and default.
+
+   ```yaml
+   # deploy policy to control centos ingress and egress
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: NetworkPolicy
+   metadata:
+     name: platform.centos-to-frontend
+     namespace: dev
+   spec:
+     tier: platform
+     order: 100
+     selector: app == "centos"
+     types:
+     - Egress
+     egress:
+     - action: Allow
+       protocol: UDP
+       destination:
+         selector: k8s-app == "kube-dns"
+         namespaceSelector: projectcalico.org/name == "kube-system"
+         ports:
+         - 53
+     - action: Allow
+       protocol: TCP
+       source: {}
+       destination:
+         selector: app == "frontend"
+         namespaceSelector: projectcalico.org/name == "default"
+         ports:
+         - 8080
+   EOF
+   ```
+
+   b. Test connectivity between dev/centos pod and default/frontend service again, should be allowed now.
+
+   ```bash   
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://frontend.default 2>/dev/null | grep -i http'
+   #output is HTTP/1.1 200 OK
+   ```
+
+   Apply the policies to allow the microservices to communicate with each other.
+
+   ```bash
+   kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/east-west-traffic.yaml
+   ```
+
+3. Convert the staged global network policy to an enforced policy.
+
+   ```yaml
+   kubectl create -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: GlobalNetworkPolicy
+   metadata:
+     name: default-deny
+   spec:
+     order: 2000
+     selector: "projectcalico.org/namespace in {'dev','default'}"
+     types:
+     - Ingress
+     - Egress
+   EOF
+   ```
+   
 ---
 
-Default deny policy
-
----
+### NetworkSets to whitelist ingress and egress access
 
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
 | 1.3, 1.3.1, 1.3.2, 1.3.3, 1.3.4, 1.3.5, 1.3.7 | Prohibit and/or manage access between internet and CDE | • Whitelist ingress access from the public internet only if the endpoint is providing a publicly accessible service<br>• Whitelist egress access to the public internet from all in-covered components<br>• Protect against forged source IP
 addresses with WireGuard (integrated in Calico)|
 
+1. Implement DNS policy to allow the external endpoint access from a specific workload, e.g. `dev/centos`.
+
+   a. Apply a policy to allow access to `api.twilio.com` endpoint using DNS rule.
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: GlobalNetworkPolicy
+   metadata:
+     name: security.external-domain-access
+   spec:
+     # requires security tier
+     tier: security
+     selector: (app == "centos" && projectcalico.org/namespace == "dev")
+     order: 200
+     types:
+       - Egress
+     egress:
+     - action: Allow
+       protocol: UDP
+       source: {}
+       destination:
+         ports:
+         - '53'
+     - action: Allow
+       source:
+         selector: app == 'centos'
+       destination:
+         domains:
+         - '*.twilio.com'
+     - action: Pass
+       source: {}
+       destination: {}
+   EOF
+   ```
+   
+   Test the access to the endpoints:
+
+   ```bash
+   # test egress access to api.twilio.com
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -skI https://api.twilio.com 2>/dev/null | grep -i http'
+   # test egress access to www.google.com
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -skI https://www.google.com 2>/dev/null | grep -i http'
+   ```
+
+   Access to the `api.twilio.com` endpoint should be allowed by the DNS policy and any other external endpoints like `www.google.com` should be denied.
+
+   b. Modify the policy to include `*.google.com` in dns policy and test egress access to www.google.com again.
+
+   ```bash
+   # test egress access to www.google.com again and it should be allowed.
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -skI https://www.google.com 2>/dev/null | grep -i http'
+   ```
+
+2. Edit the policy to use a `NetworkSet` with DNS domain instead of inline DNS rule.
+
+   a. Apply a policy to allow access to `api.twilio.com` endpoint using DNS policy.
+
+   Deploy the Network Set
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   kind: GlobalNetworkSet
+   apiVersion: projectcalico.org/v3
+   metadata:
+     name: allowed-dns
+     labels: 
+       type: allowed-dns
+   spec:
+     allowedEgressDomains:
+     - '*.twilio.com'
+   ```
+
+   Deploy the DNS policy using the network set
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: GlobalNetworkPolicy
+   metadata:
+     name: security.external-domain-access
+   spec:
+     # requires security tier
+     tier: security
+     selector: (app == "centos" && projectcalico.org/namespace == "dev")
+     order: 200
+     types:
+       - Egress
+     egress:
+     - action: Allow
+       protocol: UDP
+       source: {}
+       destination:
+         ports:
+         - '53'
+     - action: Allow
+       destination:
+         selector: type == "allowed-dns"
+     - action: Pass
+       source: {}
+       destination: {}
+   ```
+
+   Test the access to the endpoints.
+
+   ```bash
+   # test egress access to api.twilio.com
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -skI https://api.twilio.com 2>/dev/null | grep -i http'
+   # test egress access to www.google.com
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -skI https://www.google.com 2>/dev/null | grep -i http'
+   ```
+
+   b. Modify the `NetworkSet` to include `www.google.com` in dns domain and test egress access to www.google.com again.
+
+   ```bash
+   # test egress access to www.google.com again and it should be allowed.
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -skI https://www.google.com 2>/dev/null | grep -i http'
+   ```
+
 ---
 
-NetworkSets to whitelist ingress and egress access
-
----
+### Using GlobalThreatfeeds to detect and prevent web attacks
 
 
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
 | 6.5, 6.6 | Detect and prevent web attacks | • Use policy to implement fine-grained access controls for services |
 
+1. Protect workloads with GlobalThreatfeed from known bad actors.
 
+   Calicocloud offers [Global threat feed](https://docs.tigera.io/reference/resources/globalthreatfeed) resource to prevent known bad actors from accessing Kubernetes pods.
 
+   ```bash
+   kubectl get globalthreatfeeds
+   ```
+
+   >Output is 
+   ```bash
+   NAME                           CREATED AT
+   alienvault.domainthreatfeeds   2021-09-28T15:01:33Z
+   alienvault.ipthreatfeeds       2021-09-28T15:01:33Z
+   ```
+
+   You can get these domain/ip list from yaml file, the url would be:
+
+   ```bash
+   kubectl get globalthreatfeeds alienvault.domainthreatfeeds -ojson | jq -r '.spec.pull.http.url'
+
+   kubectl get globalthreatfeeds alienvault.ipthreatfeeds -ojson | jq -r '.spec.pull.http.url'
+   ```
+
+   >Output is 
+   ```bash
+   https://installer.calicocloud.io/feeds/v1/domains
+
+   https://installer.calicocloud.io/feeds/v1/ips
+   ```
+
+   Deploy the feodo Threatfeed
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: GlobalThreatFeed
+   metadata:
+     name: feodo-tracker
+   spec:
+     pull:
+       http:
+         url: https://feodotracker.abuse.ch/downloads/ipblocklist.txt
+     globalNetworkSet:
+       labels:
+         threatfeed: feodo
+   EOF
+   ```
+
+   Deploy the policy to block traffic from and to feodo Threatfeed
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: GlobalNetworkPolicy
+   metadata:
+     name: security.block-threadfeed
+   spec:
+     tier: security
+     order: 210
+     selector: all()
+     types:
+     - Egress
+     egress:
+     - action: Deny
+       destination:
+         selector: threatfeed == "feodo"||threatfeed == "snort"
+     - action: Pass
+   EOF
+   ```
+   Confirm and check the tracker threatfeed
+   
+   ```bash
+   kubectl get globalthreatfeeds 
+   ```
+
+   ```bash
+   NAME                           CREATED AT
+   alienvault.domainthreatfeeds   2022-02-11T19:21:26Z
+   alienvault.ipthreatfeeds       2022-02-11T19:21:26Z
+   feodo-tracker                  2022-02-11T22:21:43Z 
+   ```
+    
+2. Generate alerts by accessing the IP from `feodo-tracker` list. 
+
+   ```bash
+   # try to ping any of the IPs in from the feodo tracker list.
+   FIP=$(kubectl get globalnetworkset threatfeed.feodo-tracker -ojson | jq -r '.spec.nets[0]' | sed -e 's/^"//' -e 's/"$//' -e 's/\/32//')
+   kubectl -n dev exec -t netshoot -- sh -c "ping -c1 $FIP"
+   ```
+
+3. Generate alerts by accessing the IP from `alienvault.ipthreatfeeds` list. 
+
+   ```bash
+   # try to ping any of the IPs in from the ipthreatfeeds list.
+   AIP=$(kubectl get globalnetworkset threatfeed.alienvault.ipthreatfeeds -ojson | jq -r '.spec.nets[0]' | sed -e 's/^"//' -e 's/"$//' -e 's/\/32//')
+   kubectl -n dev exec -t netshoot -- sh -c "ping -c1 $AIP"
+   ```
+
+4. Confirm you are able to see the alerts in alert list. 
+
+---
 
 ## Microsegmentation
 
@@ -93,6 +500,44 @@ with a cloud-native architecture that can dynamically enforce security policy ch
 Scenario of microsegmentation using label PCI = true on a namespace
 
 ---
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: GlobalNetworkPolicy
+   metadata:
+     name: security.pci-whitelist
+   spec:
+     tier: security
+     order: 300
+     selector: projectcalico.org/namespace != "acme"
+     ingress:
+     - action: Deny
+       source:
+         serviceAccounts:
+           selector: PCI != "true"
+       destination:
+         serviceAccounts:
+           selector: PCI == "true"
+     - action: Pass
+       source:
+       destination:
+     egress:
+     - action: Deny
+       source:
+         serviceAccounts:
+           selector: PCI == "true"
+       destination:
+         serviceAccounts:
+           selector: PCI != "true"
+     - action: Pass
+       source:
+       destination:
+     types:
+     - Ingress
+     - Egress
+   ```
+
 
 
 ## IDS/IPS
