@@ -102,7 +102,7 @@
 
     >The compliance reports will be needed later in this workshop, this is why to use such aggressive cronjob. You can change the schedule at your discretion by editing it for your cluster.
 
-    Deploy the Global Reports.
+    Deploy the global reports.
 
     ```yaml
     kubectl apply -f - <<-EOF
@@ -147,9 +147,9 @@
     EOF
     ```
 
-2. Deploy global alerts.
+2. Deploy some global alerts.
 
-   >The alerts will be explored in a later lab.
+   >This alerts will be explored later in the workshop.
 
    a. Unsanctioned DNS endpoint global alert
 
