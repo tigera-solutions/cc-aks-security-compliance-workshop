@@ -75,7 +75,9 @@ a. Test connectivity between workloads within each namespace, use dev and hipste
    ```bash
    # test connectivity within dev namespace, the expected result is "HTTP/1.1 200 OK" 
    kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://nginx-svc 2>/dev/null | grep -i http'
-   
+   ```
+
+   ```bash
    # test connectivity within default namespace in 8080 port
    kubectl exec -it $(kubectl -n default get po -l app=frontend -ojsonpath='{.items[0].metadata.name}') \
    -c server -- sh -c 'nc -zv recommendationservice 8080'
@@ -93,7 +95,9 @@ c. Test connectivity from each namespace dev and default to the Internet.
    ```bash
    # test connectivity from dev namespace to the Internet, the expected result is "HTTP/1.1 200 OK"
    kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://www.google.com 2>/dev/null | grep -i http'
+   ```
 
+   ```bash
    # test connectivity from default namespace to the Internet, the expected result is "HTTP/1.1 200 OK"
    kubectl exec -it curl-demo -- sh -c 'curl -m3 -sI http://www.google.com 2>/dev/null | grep -i http'
    ```
