@@ -84,11 +84,15 @@
 
 1. Deploy demo applications.
 
+   Deploy the dev app stack
+   
    ```bash
-   #deploy dev app stack
    kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/dev-app-manifest.yaml
-    
-   #deploy Online Boutique app stack
+   ```
+   
+   Deploy the Online Boutique app stack
+
+   ```bash
    kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/kubernetes-manifests.yaml
    ```
 
