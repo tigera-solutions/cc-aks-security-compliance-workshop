@@ -195,7 +195,7 @@ We recommend that you create a global default deny policy after you complete wri
    -c main -- sh -c 'curl -m3 -sI http://www.google.com 2>/dev/null | grep -i http'
    ```
 
-   Implement explicitic policy to allow egress access from a workload in one namespace/pod, e.g. dev/centos, to hipstershop/frontend.
+   Implement explicitic policy to allow egress access from a workload in one namespace/pod, e.g. dev/centos, to default/frontend.
    
    a. Deploy egress policy between two namespaces dev and default.
 
@@ -229,6 +229,9 @@ We recommend that you create a global default deny policy after you complete wri
          namespaceSelector: projectcalico.org/name == "default"
          ports:
          - 8080
+     - action: Pass
+       source: {}
+       destination: {}
    EOF
    ```
 
