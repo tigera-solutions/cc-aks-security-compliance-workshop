@@ -1,5 +1,4 @@
-# Microsoft Azure: Hands-on AKS workshop 
-Configuration Security and Compliance
+# Microsoft Azure: Hands-on AKS workshop </br> Configuration Security and Compliance
 
 In this AKS-focused workshop, you will work with Microsoft Azure and Calico Cloud to learn how to design and deploy best practices to secure your Kubernetes environment and achieve compliance with regulatory frameworks such as PCI, SOC2 and GDPR. This 90-minute hands-on lab will guide you from building an AKS cluster, creating a Calico Cloud trial account and registering your AKS cluster to Calico Cloud for configuring and securing it for compliance. A sample app environment is designed to help implement:
 
