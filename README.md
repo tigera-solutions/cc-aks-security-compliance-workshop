@@ -25,7 +25,7 @@ If you don't have an AKS cluster created for this workshop, we recommend you cre
 
 Configure Calico parameters for a quicker visualization of the changes done during the workshop, and install and configure demo applications.
 
-- [Configure your cluster and Install de applications] (./config-demo-apps.md)
+- [Configure your cluster and Install de applications](./config-demo-apps.md)
 
 ---
 
