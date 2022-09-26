@@ -52,6 +52,7 @@ Connect to Calico Cloud GUI. From the menu select `Service Graph > Default`. Exp
 
 Connect to Calico Cloud GUI. From the menu select `Service Graph > Flow Visualizations`. Explore the options.
 
+![flow-visualization](https://user-images.githubusercontent.com/104035488/192358472-112c832f-2fd7-4294-b8cc-fec166a9b11e.gif)
 
 
 ---
@@ -687,8 +688,12 @@ that are in-scope and out-of-scope with your policy.
 
 1. On the Calico Cloud GUI, navigate to `Compliance`.
 
+![compliance-reports](https://user-images.githubusercontent.com/104035488/192358634-c873ffb5-f874-495f-8ba4-79806ff84654.gif)
+
+
 2. Explore the Compliance Reports.
 
+![cis-benchmark](https://user-images.githubusercontent.com/104035488/192358645-ab77c305-0a9d-4242-b37f-972dc22b4d84.gif)
 
 
 ## Demo Preparation Config
