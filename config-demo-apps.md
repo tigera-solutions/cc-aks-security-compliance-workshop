@@ -102,7 +102,7 @@
 
     >The compliance reports will be needed later in this workshop, this is why to use such aggressive cronjob. You can change the schedule at your discretion by editing it for your cluster.
 
-    Global Reports YAML (copy&paste)
+    Deploy the Global Reports.
 
     ```yaml
     kubectl apply -f - <<-EOF
