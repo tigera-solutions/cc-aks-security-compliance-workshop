@@ -167,7 +167,7 @@ We recommend that you create a global default deny policy after you complete wri
    
    ```bash   
    # test connectivity from dev namespace to hipstershop namespace, the expected result is "command terminated with exit code 1"
-   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://frontend.hipstershop 2>/dev/null | grep -i http'
+   kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://frontend.default 2>/dev/null | grep -i http'
    ```
 
    c. Test connectivity from each namespace dev and default to the Internet.
@@ -495,11 +495,10 @@ with a cloud-native architecture that can dynamically enforce security policy ch
 | --- | --- | --- |
 |1.1, 1.1.4, 1.1.6, 1.2.1, 1.2.2, 1.2.3 | Install and maintain a firewall configuration to protect cardholder data | • Identify everything covered by PCI requirements with a well-defined label (e.g. PCI=true)<br>• Block all traffic between PCI and non-PCI workloads<br>• Whitelist all traffic within PCI workloads |
 
---- 
+ 
+### Microsegmentation using label PCI = true on a namespace
 
-Scenario of microsegmentation using label PCI = true on a namespace
-
----
+1. Create a policy that only allows endpoints with label PCI=true to communicate
 
    ```yaml
    kubectl apply -f - <<-EOF
@@ -510,7 +509,7 @@ Scenario of microsegmentation using label PCI = true on a namespace
    spec:
      tier: security
      order: 300
-     selector: projectcalico.org/namespace != "acme"
+     selector: projectcalico.org/namespace = "dev"
      ingress:
      - action: Deny
        source:
@@ -536,9 +535,8 @@ Scenario of microsegmentation using label PCI = true on a namespace
      types:
      - Ingress
      - Egress
+   EOF
    ```
-
-
 
 ## IDS/IPS
 
@@ -557,6 +555,45 @@ anomalies with Calico flow logs
 ---
 
 DPI / IDS
+
+### Deep Packet Inspection
+
+1. Create the DPI and the Intrusion Detection for the dev/nginx service.
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: DeepPacketInspection
+   metadata:
+     name: dpi-nginx
+     namespace: dev
+   spec:
+     selector: app == "nginx"
+   ---
+   apiVersion: operator.tigera.io/v1
+   kind: IntrusionDetection
+   metadata:
+     name: tigera-secure
+   spec:
+     componentResources:
+     - componentName: DeepPacketInspection
+       resourceRequirements:
+         limits:
+           cpu: "1"
+           memory: 1Gi
+         requests:
+           cpu: 100m
+           memory: 100Mi
+   EOF
+   ```
+
+2. Attack the nginx service
+   ```bash
+   kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/ -H 'User-Agent: Mozilla/4.0' -XPOST --data-raw 'regis=1234'"
+   kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/secid_canceltoken.cgi -H 'X-CMD: Test' -H 'X-KEY: Test' -XPOST"
+   kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/cmd.exe"
+   kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/NessusTest"
+   ```
+   [Check the Snort Id here!](https://www.snort.org/search)
 
 ---
 
@@ -602,6 +639,38 @@ specify the use of encryption. Calico’s encryption is 6X faster than any other
 | 4.1 | Data-in-transit encryption to safeguard sensitive data | • Secure and encrypt data in transit for all covered workloads|
 
 
+1. Install WireGuard is already installed on Ubuntu nodes.
+
+2. Enable WireGuard for the cluster
+
+   ```bash
+   kubectl patch felixconfiguration default --type='merge' -p '{"spec":{"wireguardEnabled":true}}'
+   ```
+
+3. Verify if enabled
+
+   ```bash
+   NODENAME=$(kubectl get nodes -o=jsonpath='{.items[0].metadata.name}')
+   kubectl get node $NODENAME -o yaml | grep -B2 -A5 annotation
+   ```
+
+4. Enable stats collection
+
+   ```bash
+   kubectl patch installation.operator.tigera.io default --type merge -p '{"spec":{"nodeMetricsPort":9091}}'
+   ```
+
+5. Apply Service, ServiceMonitor, NetworkPolicy manifests:
+
+   ```bash
+   kubectl apply -f ./demo-prep/wireguard-stats.yaml
+   ```
+
+6. Disable WireGuard for the cluster
+   ```bash
+   kubectl patch felixconfiguration default --type='merge' -p '{"spec":{"wireguardEnabled":false}}'
+   ```
+
 ## Compliance Reports
 
 Continuous compliance means employing a continual audit that shows what traffic was allowed in your infrastructure,
@@ -616,6 +685,9 @@ that are in-scope and out-of-scope with your policy.
 | --- | --- | --- |
 | 2.2, 2.4 | Inventory the systems and make sure they meet industry-accepted system-hardening standards | • Keep a running inventory of all ephemeral workloads along with their networking and security controls<br>• Leverage inventory report and CIS|
 
+1. On the Calico Cloud GUI, navigate to `Compliance`.
+
+2. Explore the Compliance Reports.
 
 
 
@@ -637,350 +709,4 @@ that are in-scope and out-of-scope with your policy.
 
 
 
-
-
-
-
-
-
-
-2. If **WireGuard** needs to be configured, do it now.
-   
-   >  :warning: **IF YOU ENABLE WIREGUARD FOR AN AKS CLUSTER, L7 LOGGING WILL NEVER WORK**
-
-   [Reference documentation](https://docs.calicocloud.io/compliance/encrypt-cluster-pod-traffic)
-
-      >Only Supported on:
-      >
-      >The following platforms using only IPv4:
-      >    - Kubernetes, on-premises
-      >    - EKS using Calico CNI
-      >    - EKS using AWS CNI
-      >    - AKS using Azure CNI
-      >
-      >All platforms listed above will encrypt pod-to-pod traffic. Additionally, when using AKS or EKS, host-to-host traffic will also be encrypted, including host-networked pods.
-
-   <details>
-      <summary> EKS </summary>
-       
-      1. Install WireGuard on each node:
-   
-         ```bash
-         sudo yum install kernel-devel-`uname -r` -y
-         sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y
-         sudo curl -o /etc/yum.repos.d/jdoss-wireguard-epel-7.repo https://copr.fedorainfracloud.org/coprs/jdoss/wireguard/repo/epel-7/jdoss-wireguard-epel-7.repo
-         sudo yum install wireguard-dkms wireguard-tools -y
-         ```
-   
-      2. Enable WireGuard for the cluster
-   
-         ```bash
-         kubectl patch felixconfiguration default --type='merge' -p '{"spec":{"wireguardEnabled":true}}'
-         ```
-   
-      3. Verify if enabled
-   
-         ```bash
-         NODENAME=$(kubectl get nodes -o=jsonpath='{.items[0].metadata.name}')
-         kubectl get node $NODENAME -o yaml | grep -B2 -A5 annotation
-         ```
-   
-      4. Enable stats collection
-   
-         ```bash
-         kubectl patch installation.operator.tigera.io default --type merge -p '{"spec":{"nodeMetricsPort":9091}}'
-         ```
-   
-      5. Apply Service, ServiceMonitor, NetworkPolicy manifests:
-   
-         ```bash
-         kubectl apply -f ./demo-prep/wireguard-stats.yaml
-         ```
-   
-      6. Disable WireGuard for the cluster 
-   
-         ```bash
-         kubectl patch felixconfiguration default --type='merge' -p '{"spec":{"wireguardEnabled":false}}'
-         ```
-   </details>
-
-   <details>
-      <summary> AKS </summary>
-       
-      1. Install WireGuard is already installed on Ubuntu nodes.
-   
-      2. Enable WireGuard for the cluster
-   
-         ```bash
-         kubectl patch felixconfiguration default --type='merge' -p '{"spec":{"wireguardEnabled":true}}'
-         ```
-   
-      3. Verify if enabled
-   
-         ```bash
-         NODENAME=$(kubectl get nodes -o=jsonpath='{.items[0].metadata.name}')
-         kubectl get node $NODENAME -o yaml | grep -B2 -A5 annotation
-         ```
-   
-      4. Enable stats collection
-   
-         ```bash
-         kubectl patch installation.operator.tigera.io default --type merge -p '{"spec":{"nodeMetricsPort":9091}}'
-         ```
-   
-      5. Apply Service, ServiceMonitor, NetworkPolicy manifests:
-   
-         ```bash
-         kubectl apply -f ./demo-prep/wireguard-stats.yaml
-         ```
-   
-      6. Disable WireGuard for the cluster
-   
-         ```bash
-         kubectl patch felixconfiguration default --type='merge' -p '{"spec":{"wireguardEnabled":false}}'
-         ```
-   </details>
-
-3. **Demo Preparation Manifests**
-
-   This manifest will create:
-   
-   - Tiers "security" and "platform"
-   - DNS GlobalNetworkPolicy
-   - Global Reports
-   - Global Alerts
-
-   ```bash 
-   kubectl apply -f ./demo-prep/demo-manifest.yaml
-   ```
-   
-4. **Install the applications**
-
-   Online Boutique 0.3.9
-
-   ```bash 
-   kubectl apply -f ./demo-prep/kubernetes-manifests.yaml
-   ```
-
-   Dev App Stack
-
-   ```bash 
-   kubectl apply -f ./demo-prep/dev-app-manifest.yaml
-   ```
-
-   Install curl on the loadgen, just in case :)
-
-   ```bash 
-   kubectl exec -it $(kubectl get po -l app=loadgenerator -ojsonpath='{.items[0].metadata.name}') -c main -- sh -c 'apt-get update && apt install curl -y'
-   ```
-
-5. **L7 Logging**
-
-   1. Policy Sync Path
-   
-      ```bash 
-      kubectl patch felixconfiguration default --type='merge' -p '{"spec":{"policySyncPathPrefix":"/var/run/nodeagent"}}'
-      ```
-   
-   2. Application Layer
-   
-      ```yaml 
-      kubectl apply -f - <<-EOF
-      apiVersion: operator.tigera.io/v1
-      kind: ApplicationLayer
-      metadata:
-        name: tigera-secure
-      spec:
-        logCollection:
-          collectLogs: Enabled
-          logIntervalSeconds: 5
-          logRequestsPerInterval: -1
-      EOF
-      ```
-   
-   3. Annotate the services
-   
-      ```bash 
-      kubectl annotate svc frontend projectcalico.org/l7-logging=true
-      kubectl annotate svc frontend-external projectcalico.org/l7-logging=true
-      ```
-  
-
-6. **Honeypods**
-
-
-   1. Create dedicated namespace and RBAC for honeypods
-   
-      ```bash
-      kubectl apply -f https://docs.tigera.io/manifests/threatdef/honeypod/common.yaml
-      ```
-   
-   2. Add tigera pull secret to the namespace. We clone the existing secret from the calico-system NameSpace
-   
-      ```bash
-      kubectl get secret tigera-pull-secret --namespace=calico-system -o yaml | \
-      grep -v '^[[:space:]]*namespace:[[:space:]]*calico-system' | \
-      kubectl apply --namespace=tigera-internal -f -
-      ```
-   
-   3. Expose IPs and service ports
-   
-      - Expose pod IP to test IP enumeration and port scan use case
-      
-        ```bash
-        kubectl apply -f https://docs.tigera.io/manifests/threatdef/honeypod/ip-enum.yaml
-        ```
-      
-      - Expose nginx service that can be reached via ClusterIP or DNS. Create two service, one unreachable, one debug
-      
-        ```bash
-        kubectl apply -f https://docs.tigera.io/manifests/threatdef/honeypod/expose-svc.yaml 
-        ```
-      
-      - Expose MySQL service
-        
-        ```bash
-        kubectl apply -f https://docs.tigera.io/manifests/threatdef/honeypod/vuln-svc.yaml 
-        ```
-   
-   4. Attacking the Honeypods
-   
-      - HoneyPod enumeration
-      
-        ```bash
-        POD_IP=$(kubectl -n tigera-internal get po --selector app=tigera-internal-app -o jsonpath='{.items[0].status.podIP}')
-        kubectl -n dev exec netshoot -- ping -c5 $POD_IP
-        ```
-      - HoneyPod nginx service
-      
-        ```bash
-        SVC_URL=$(kubectl -n tigera-internal get svc -l app=tigera-dashboard-internal-debug -ojsonpath='{.items[0].metadata.name}')
-        SVC_PORT=$(kubectl -n tigera-internal get svc -l app=tigera-dashboard-internal-debug -ojsonpath='{.items[0].spec.ports[0].port}')
-        kubectl -n dev exec netshoot -- curl -m3 -skI $SVC_URL.tigera-internal:$SVC_PORT | grep -i http
-        ```
-      
-      - HoneyPod MySQL service
-      
-        ```bash
-        SVC_URL=$(kubectl -n tigera-internal get svc -l app=tigera-internal-backend -ojsonpath='{.items[0].metadata.name}')
-        SVC_PORT=$(kubectl -n tigera-internal get svc -l app=tigera-internal-backend -ojsonpath='{.items[0].spec.ports[0].port}')
-        kubectl -n dev exec netshoot -- nc -zv $SVC_URL.tigera-internal $SVC_PORT
-        ```
-   
-7. **Deep Packet Inspection**
-
-   1. Create the DPI and the Intrusion Detection for the dev/nginx service.
-
-      ```yaml
-      kubectl apply -f - <<-EOF
-      apiVersion: projectcalico.org/v3
-      kind: DeepPacketInspection
-      metadata:
-        name: dpi-nginx
-        namespace: dev
-      spec:
-        selector: app == "nginx"
-      ---
-      apiVersion: operator.tigera.io/v1
-      kind: IntrusionDetection
-      metadata:
-        name: tigera-secure
-      spec:
-        componentResources:
-        - componentName: DeepPacketInspection
-          resourceRequirements:
-            limits:
-              cpu: "1"
-              memory: 1Gi
-            requests:
-              cpu: 100m
-              memory: 100Mi
-      EOF
-      ```
-   
-   2. Attack the nginx service
-
-      ```bash
-      kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/ -H 'User-Agent: Mozilla/4.0' -XPOST --data-raw 'regis=1234'"
-      kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/secid_canceltoken.cgi -H 'X-CMD: Test' -H 'X-KEY: Test' -XPOST"
-      kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/cmd.exe"
-      kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/NessusTest"
-      ```
-
-      [Check the Snort Id here!](https://www.snort.org/search)
-
-8. **OFAC Sanctions List**
-
-   1. Create the OFAC Threatfeed
-
-      ```yaml
-      kubectl apply -f - <<-EOF
-      apiVersion: projectcalico.org/v3
-      kind: GlobalThreatFeed
-      metadata:
-        name: ofac-sanctions
-      spec:
-        pull:
-          http:
-            url: http://tigera.rocks/ofac-sanctions-ipblocklist.txt 
-        globalNetworkSet:
-          labels:
-            threatfeed: ofac
-      EOF
-      ```
-
-   2. Create the deny rule to OFAC list
-
-      ```yaml
-      kubectl apply -f - <<-EOF
-      apiVersion: projectcalico.org/v3
-      kind: GlobalNetworkPolicy
-      metadata:
-        name: security.ofac-sanctions
-      spec:
-        tier: security
-        order: 200
-        selector: all()
-        types:
-        - Egress
-        egress:
-        - action: Deny
-          destination:
-            selector: threatfeed == "ofac"
-        - action: Pass
-      EOF
-      ```
-
-   3. Global Alert for OFAC List access attempt
-   
-      ```yaml
-      kubectl apply -f - <<-EOF
-      apiVersion: projectcalico.org/v3
-      kind: GlobalAlert
-      metadata:
-        name: security.ofac-sanctions
-      spec:
-        description: "Alerts when pods try to access OFAC sanctioned sites"
-        summary: "[flows] [ofac-sanction] ${source_namespace}/${source_name_aggr} has tried to access ${dest_ip}"
-        severity: 100
-        period: 1m
-        lookback: 1m
-        dataSet: flows
-        query: dest_name_aggr="threatfeed.ofac-sanctions"
-        aggregateBy: [source_namespace, source_name_aggr, dest_name_aggr, dest_ip]
-        field: num_flows
-        metric: sum
-        condition: gt
-        threshold: 0
-      EOF
-      ```
-
-   **Done! Your cluster is ready to start with the demo!**
-   
----
-
-## Choose your Demo script
-  
-   - [Calico Cloud](./cc-demo.md)
-   - [Calico Enterprise](./ce-demo.md)
 
