@@ -28,12 +28,14 @@ Configure Calico parameters for this workshop, and install and configure demo ap
 
 ---
 
-# How Calico supports PCI compliance requirements
+# How Calico supports compliance requirements
 
-Tigera’s solutions, Calico Cloud and Calico Enterprise, enable north-south controls such as egress access, east-west controls such as microsegmentation, and enterprise security controls, policy enforcement, and compliance reporting across all Kubernetes distributions in both hybrid and multi-cloud environments. Calico provides the following features to help achieve PCI compliance.
+Tigera’s solutions, Calico Cloud and Calico Enterprise, enable north-south controls such as egress access, east-west controls such as microsegmentation, and enterprise security controls, policy enforcement, and compliance reporting across all Kubernetes distributions in both hybrid and multi-cloud environments. 
 
 - [Download the whitepaper: PCI compliance for Hosts, VMs, containers, and Kubernetes](https://www.tigera.io/lp/kubernetes-pci-compliance/)
 - [Download the PCI DSS v4.0 Quick Reference Guide](https://docs-prv.pcisecuritystandards.org/PCI%20DSS/Supporting%20Document/PCI_DSS-QRG-v4_0.pdf)
+
+Calico provides the following features to help achieve PCI compliance.
 
 ---
 
@@ -46,6 +48,7 @@ Calico provides methods to enable fine-grained access controls between your micr
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
 | 1.1.2, 1.1.3 | Current network diagram that identifies all connections between the CDE and other networks and systems | • Stay current with the network diagram for in-scope workloads in Kubernetes environments using Calico’s Dynamic Service Graph and flow visualizer |
+
 
 Connect to Calico Cloud GUI. From the menu select `Service Graph > Default`. Explore the options.
 
