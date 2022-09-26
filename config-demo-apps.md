@@ -85,7 +85,7 @@
 1. Deploy demo applications.
 
    Deploy the dev app stack
-   
+
    ```bash
    kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/dev-app-manifest.yaml
    ```
@@ -98,9 +98,9 @@
 
 ## STEP 4 - Create the Global Reports and the Global Alerts
 
-1. Deploy compliance reports which schedule as cronjob in every hour for cluster report and a daily cis benchmark report.
+1. Deploy compliance reports which schedule as cronjob in every 15 min for cluster report and a cis benchmark report.
 
-    >The compliance reports will be needed for one of a later lab, is cronjob in your cluster, you can change the schedule by edit it.
+    >The compliance reports will be needed later in this workshop, this is why to use such aggressive cronjob. You can change the schedule at your discretion by editing it for your cluster.
 
     Global Reports YAML (copy&paste)
 
