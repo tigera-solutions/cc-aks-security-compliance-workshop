@@ -28,7 +28,7 @@ Configure Calico parameters for this workshop, and install and configure demo ap
 
 ---
 
-## How Calico supports PCI compliance requirements
+# How Calico supports PCI compliance requirements
 
 Tigera’s solutions, Calico Cloud and Calico Enterprise, enable north-south controls such as egress access, east-west controls such as microsegmentation, and enterprise security controls, policy enforcement, and compliance reporting across all Kubernetes distributions in both hybrid and multi-cloud environments. Calico provides the following features to help achieve PCI compliance.
 
