@@ -52,9 +52,7 @@
 
 2. Deploy base policy.
 
-   Sample policies are deployed for allowing DNS access, logging and PCI segementation.
-
-   You can copy and past the command below:
+   Deploy the following base policy for allowing DNS access to all endpoints.
 
    ```yaml
    kubectl apply -f - <<-EOF
@@ -65,15 +63,20 @@
    spec:
      tier: platform
      order: 200
-     selector: projectcalico.org/namespace != "acme"
+     selector: all()
+     types:
+     - Egress    
      egress:
        - action: Allow
+         protocol: UDP
          source: {}
          destination:
            selector: k8s-app == "kube-dns"
+           ports:
+           - '53'
        - action: Pass
-     types:
-       - Egress
+         source: {}
+         destination: {}
    EOF
    ```
 
