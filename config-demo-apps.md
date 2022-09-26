@@ -71,75 +71,9 @@
          source: {}
          destination:
            selector: k8s-app == "kube-dns"
+       - action: Pass
      types:
        - Egress
-   ---
-   apiVersion: projectcalico.org/v3
-   kind: GlobalNetworkPolicy
-   metadata:
-     name: platform.pass
-   spec:
-     tier: platform
-     order: 2000
-     ingress:
-       - action: Pass
-     egress:
-       - action: Pass
-     doNotTrack: false
-     applyOnForward: false
-     preDNAT: false
-     types:
-       - Ingress
-       - Egress
-   ---
-   apiVersion: projectcalico.org/v3
-   kind: GlobalNetworkPolicy
-   metadata:
-     name: security.pass
-   spec:
-     tier: security
-     order: 2000
-     ingress:
-       - action: Pass
-     egress:
-       - action: Pass
-     types:
-       - Ingress
-       - Egress
-   ---
-   apiVersion: projectcalico.org/v3
-   kind: GlobalNetworkPolicy
-   metadata:
-     name: security.pci-whitelist
-   spec:
-     tier: security
-     order: 300
-     selector: projectcalico.org/namespace != "acme"
-     ingress:
-     - action: Deny
-       source:
-         serviceAccounts:
-           selector: PCI != "true"
-       destination:
-         serviceAccounts:
-           selector: PCI == "true"
-     - action: Pass
-       source:
-       destination:
-     egress:
-     - action: Deny
-       source:
-         serviceAccounts:
-           selector: PCI == "true"
-       destination:
-         serviceAccounts:
-           selector: PCI != "true"
-     - action: Pass
-       source:
-       destination:
-     types:
-     - Ingress
-     - Egress
    EOF
    ```
 
