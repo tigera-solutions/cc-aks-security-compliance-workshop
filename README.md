@@ -374,13 +374,19 @@ We recommend that you create a global default deny policy after you complete wri
 
 3. The NetworkSet can also be used to block access from a specific ip address or cidr to an endpoint in your cluster. To demonstrate it, we are going to block the access from your workstation to the Online Boutique frontend-external service.
 
-   a. Identify your workstation ip address and store it in a environment variable
+   a. Test the access to the frontend-external service
+
+   ```bash
+   curl -m3 $(kubectl get svc frontend-external -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+   ```
+   
+   b. Identify your workstation ip address and store it in a environment variable
 
    ```bash
    export MY_IP=$(curl ifconfig.me)
    ```
 
-   b. Create a NetworkSet with your ip address on it.
+   c. Create a NetworkSet with your ip address on it.
 
    ```yaml
    kubectl apply -f - <<-EOF
@@ -395,6 +401,8 @@ We recommend that you create a global default deny policy after you complete wri
      - $MY_IP/32
    EOF
    ```
+   
+   d. Create the policy to deny access to the frontend service.
 
    ```yaml
    kubectl apply -f - <<-EOF
@@ -418,6 +426,11 @@ We recommend that you create a global default deny policy after you complete wri
    EOF
    ```
 
+   a. Test the access to the frontend-external service. It is blocked now.
+
+   ```bash
+   curl -m3 $(kubectl get svc frontend-external -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+   ```
 
 ---
 
