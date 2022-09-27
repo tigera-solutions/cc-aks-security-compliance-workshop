@@ -270,7 +270,6 @@ We recommend that you create a global default deny policy after you complete wri
    metadata:
      name: security.external-domain-access
    spec:
-     # requires security tier
      tier: security
      selector: (app == "centos" && projectcalico.org/namespace == "dev")
      order: 200
@@ -339,7 +338,6 @@ We recommend that you create a global default deny policy after you complete wri
    metadata:
      name: security.external-domain-access
    spec:
-     # requires security tier
      tier: security
      selector: (app == "centos" && projectcalico.org/namespace == "dev")
      order: 200
@@ -347,17 +345,12 @@ We recommend that you create a global default deny policy after you complete wri
        - Egress
      egress:
      - action: Allow
-       protocol: UDP
-       source: {}
-       destination:
-         ports:
-         - '53'
-     - action: Allow
        destination:
          selector: type == "allowed-dns"
      - action: Pass
        source: {}
        destination: {}
+   EOF
    ```
 
    Test the access to the endpoints.
