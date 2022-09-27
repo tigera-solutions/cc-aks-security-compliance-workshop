@@ -427,24 +427,27 @@ We recommend that you create a global default deny policy after you complete wri
    EOF
    ```
 
-apiVersion: projectcalico.org/v3
-kind: NetworkPolicy
-metadata:
-  name: security.blockep-ips
-  namespace: default
-spec:
-  tier: security
-  order: 300
-  selector: app == "frontend"
-  serviceAccountSelector: ''
-  ingress:
-    - action: Deny
-      source:
-        selector: type == "blocked-ips"
-      destination: {}
-  types:
-    - Ingress
-
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: NetworkPolicy
+   metadata:
+     name: security.blockep-ips
+     namespace: default
+   spec:
+     tier: security
+     order: 300
+     selector: app == "frontend"
+     serviceAccountSelector: ''
+     ingress:
+       - action: Deny
+         source:
+           selector: type == "blocked-ips"
+         destination: {}
+     types:
+       - Ingress
+   EOF
+   ```
 
    a. Test the access to the frontend-external service. It is blocked now.
 
