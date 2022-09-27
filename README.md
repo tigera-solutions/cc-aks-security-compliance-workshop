@@ -444,6 +444,7 @@ We recommend that you create a global default deny policy after you complete wri
          source:
            selector: type == "blocked-ips"
          destination: {}
+       - action: Pass
      types:
        - Ingress
    EOF
