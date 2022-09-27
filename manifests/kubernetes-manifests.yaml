@@ -288,6 +288,7 @@ metadata:
   name: frontend-external
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
   selector:
     app: frontend
   ports:
