@@ -278,12 +278,6 @@ We recommend that you create a global default deny policy after you complete wri
        - Egress
      egress:
      - action: Allow
-       protocol: UDP
-       source: {}
-       destination:
-         ports:
-         - '53'
-     - action: Allow
        source:
          selector: app == 'centos'
        destination:
