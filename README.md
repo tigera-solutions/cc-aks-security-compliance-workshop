@@ -327,6 +327,7 @@ We recommend that you create a global default deny policy after you complete wri
    spec:
      allowedEgressDomains:
      - '*.twilio.com'
+   EOF
    ```
 
    Deploy the DNS policy using the network set
