@@ -412,7 +412,7 @@ We recommend that you create a global default deny policy after you complete wri
      name: security.blockep-ips
    spec:
      tier: security
-     selector: (app == "frontend" && projectcalico.org/namespace == "default")
+     selector: (svc == "frontend-external" && projectcalico.org/namespace == "default")
      order: 300
      types:
        - Ingress
