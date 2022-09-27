@@ -329,7 +329,7 @@ We recommend that you create a global default deny policy after you complete wri
    EOF
    ```
 
-   Deploy the DNS policy using the network set
+   b. Deploy the DNS policy using the network set
 
    ```yaml
    kubectl apply -f - <<-EOF
@@ -353,7 +353,7 @@ We recommend that you create a global default deny policy after you complete wri
    EOF
    ```
 
-   Test the access to the endpoints.
+   c. Test the access to the endpoints.
 
    ```bash
    # test egress access to api.twilio.com
@@ -365,12 +365,59 @@ We recommend that you create a global default deny policy after you complete wri
    kubectl -n dev exec -t centos -- sh -c 'curl -m3 -skI https://www.google.com 2>/dev/null | grep -i http'
    ```
 
-   b. Modify the `NetworkSet` to include `www.google.com` in dns domain and test egress access to www.google.com again.
+   d. Modify the `NetworkSet` to include `*.google.com` in dns domain and test egress access to www.google.com again.
 
    ```bash
    # test egress access to www.google.com again and it should be allowed.
    kubectl -n dev exec -t centos -- sh -c 'curl -m3 -skI https://www.google.com 2>/dev/null | grep -i http'
    ```
+
+3. The NetworkSet can also be used to block access from a specific ip address or cidr to an endpoint in your cluster. To demonstrate it, we are going to block the access from your workstation to the Online Boutique frontend-external service.
+
+   a. Identify your workstation ip address and store it in a environment variable
+
+   ```bash
+   export MY_IP=$(curl ifconfig.me)
+   ```
+
+   b. Create a NetworkSet with your ip address on it.
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   kind: GlobalNetworkSet
+   apiVersion: projectcalico.org/v3
+   metadata:
+     name: ip-address-list
+     labels: 
+       type: blocked-ips
+   spec:
+     nets:
+     - $MY_IP/32
+   EOF
+   ```
+
+   ```yaml
+   kubectl apply -f - <<-EOF
+   apiVersion: projectcalico.org/v3
+   kind: GlobalNetworkPolicy
+   metadata:
+     name: security.blockep-ips
+   spec:
+     tier: security
+     selector: (app == "frontend" && projectcalico.org/namespace == "default")
+     order: 300
+     types:
+       - Ingress
+     ingress:
+     - action: Deny
+       source:
+         selector: type == "blocked-ips"
+     - action: Pass
+       source: {}
+       destination: {}
+   EOF
+   ```
+
 
 ---
 
@@ -383,7 +430,7 @@ We recommend that you create a global default deny policy after you complete wri
 
 1. Protect workloads with GlobalThreatfeed from known bad actors.
 
-   Calicocloud offers [Global threat feed](https://docs.tigera.io/reference/resources/globalthreatfeed) resource to prevent known bad actors from accessing Kubernetes pods.
+   Calicocloud offers [Global Threatfeed](https://docs.tigera.io/reference/resources/globalthreatfeed) resource to prevent known bad actors from accessing Kubernetes pods.
 
    ```bash
    kubectl get globalthreatfeeds
