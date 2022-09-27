@@ -380,7 +380,7 @@ We recommend that you create a global default deny policy after you complete wri
 
 ---
 
-### Using GlobalThreatfeeds to detect and prevent web attacks
+### Using Global Threatfeeds to detect and prevent web attacks
 
 
 | PCI Control # | Requirements| How Calico meets this requirements |
