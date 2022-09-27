@@ -257,8 +257,7 @@ We recommend that you create a global default deny policy after you complete wri
 
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
-| 1.3, 1.3.1, 1.3.2, 1.3.3, 1.3.4, 1.3.5, 1.3.7 | Prohibit and/or manage access between internet and CDE | • Whitelist ingress access from the public internet only if the endpoint is providing a publicly accessible service<br>• Whitelist egress access to the public internet from all in-covered components<br>• Protect against forged source IP
-addresses with WireGuard (integrated in Calico)|
+| 1.3, 1.3.1, 1.3.2, 1.3.3, 1.3.4, 1.3.5, 1.3.7 | Prohibit and/or manage access between internet and CDE | • Whitelist ingress access from the public internet only if the endpoint is providing a publicly accessible service<br>• Whitelist egress access to the public internet from all in-covered components<br>• Protect against forged source IP addresses with WireGuard (integrated in Calico)|
 
 1. Implement DNS policy to allow the external endpoint access from a specific workload, e.g. `dev/centos`.
 
