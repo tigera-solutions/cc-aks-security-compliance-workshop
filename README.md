@@ -216,13 +216,6 @@ We recommend that you create a global default deny policy after you complete wri
      egress:
      - action: Allow
        protocol: UDP
-       source: {}
-       destination:
-         selector: k8s-app == "kube-dns"
-         ports:
-         - '53'
-     - action: Allow
-       protocol: UDP
        destination:
          selector: k8s-app == "kube-dns"
          namespaceSelector: projectcalico.org/name == "kube-system"
@@ -613,6 +606,13 @@ with a cloud-native architecture that can dynamically enforce security policy ch
      order: 400
      selector: projectcalico.org/namespace == "storefront"
      ingress:
+     - action: Allow
+       protocol: UDP
+       source: {}
+       destination:
+         selector: k8s-app == "kube-dns"
+         ports:
+         - '53'
      - action: Deny
        source:
          selector: PCI != "true"
