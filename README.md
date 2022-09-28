@@ -436,8 +436,8 @@ We recommend that you create a global default deny policy after you complete wri
    metadata:
      name: blocked-ips
    spec:
-     description: "A connection attempt from a blocked ip address just happened."
-     summary: "[blocked-ip] ${source_ip} from ${source_name_aggr} networkset attempted to access ${dest_namespace}/${dest_name_aggr}"
+     summary: "A connection attempt from a blocked ip address just happened."
+     description: "[blocked-ip] ${source_ip} from ${source_name_aggr} networkset attempted to access ${dest_namespace}/${dest_name_aggr}"
      severity: 100
      dataSet: flows
      period: 1m
