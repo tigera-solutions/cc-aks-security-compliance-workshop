@@ -603,7 +603,7 @@ with a cloud-native architecture that can dynamically enforce security policy ch
      name: security.pci-whitelist
    spec:
      tier: security
-     order: 400
+     order: 100
      selector: projectcalico.org/namespace == "storefront"
      ingress:
      - action: Allow
@@ -651,8 +651,7 @@ configured to trigger automatic remediation.
 
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
-| 5.1, 5.2, 5.3, 5.4, 10.6, 11.4 | Protect all systems against malware with Intrusion Detection Systems (IDS)/Intrusion Prevention Systems (IPS) and network monitoring. Regularly update antivirus software. Review logs for anomalous and suspicious activity | • Detect and address anomalies and threats with Calico instead of antivirus software <br>• Report and analyze compliance audit findings with Calico<br>• Automatically quarantine compromised workloads<br>• Get insights into statistical and behavioral
-anomalies with Calico flow logs
+| 5.1, 5.2, 5.3, 5.4, 10.6, 11.4 | Protect all systems against malware with Intrusion Detection Systems (IDS)/Intrusion Prevention Systems (IPS) and network monitoring. Regularly update antivirus software. Review logs for anomalous and suspicious activity | • Detect and address anomalies and threats with Calico instead of antivirus software <br>• Report and analyze compliance audit findings with Calico<br>• Automatically quarantine compromised workloads<br>• Get insights into statistical and behavioral anomalies with Calico flow logs
 
 ---
 
