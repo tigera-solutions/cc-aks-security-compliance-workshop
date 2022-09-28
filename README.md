@@ -581,7 +581,19 @@ with a cloud-native architecture that can dynamically enforce security policy ch
  
 ### Microsegmentation using label PCI = true on a namespace
 
-1. Create a policy that only allows endpoints with label PCI=true to communicate
+1. For the microsegmentation deploy a new example application
+
+   ```bash
+   kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/storefront-pci.yaml
+   ```
+
+2. Verify that all the workloads has the label `PCI=true`.
+
+   ```bash
+   kubectl get pods -n storefront --show-labels
+   ```
+
+3. Create a policy that only allows endpoints with label PCI=true to communicate.
 
    ```yaml
    kubectl apply -f - <<-EOF
@@ -616,6 +628,10 @@ with a cloud-native architecture that can dynamically enforce security policy ch
      - Egress
    EOF
    ```
+
+Now only the pods labeled with PCI=true will be able to exchange information. Note that you can use different labels to create any sort of restrictions for the workloads communications.
+
+---
 
 ## IDS/IPS
 
