@@ -596,22 +596,18 @@ with a cloud-native architecture that can dynamically enforce security policy ch
      ingress:
      - action: Deny
        source:
-         serviceAccounts:
-           selector: PCI != "true"
+         selector: PCI != "true"
        destination:
-         serviceAccounts:
-           selector: PCI == "true"
+         selector: PCI == "true"
      - action: Pass
        source:
        destination:
      egress:
      - action: Deny
        source:
-         serviceAccounts:
-           selector: PCI == "true"
+         selector: PCI == "true"
        destination:
-         serviceAccounts:
-           selector: PCI != "true"
+         selector: PCI != "true"
      - action: Pass
        source:
        destination:
