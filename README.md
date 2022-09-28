@@ -688,24 +688,23 @@ DPI / IDS
    ```
 
 2. Attack the nginx service
-
+   
    ```bash
    kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/ -H 'User-Agent: Mozilla/4.0' -XPOST --data-raw 'regis=1234'"
    ```
 
    ```bash
    kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/secid_canceltoken.cgi -H 'X-CMD: Test' -H 'X-KEY: Test' -XPOST"
-      kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/ -H 'User-Agent: Mozilla/4.0' -XPOST --data-raw 'regis=1234'"
    ```
 
    ```bash
    kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/cmd.exe"
-      kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/ -H 'User-Agent: Mozilla/4.0' -XPOST --data-raw 'regis=1234'"
    ```
 
    ```bash
    kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/NessusTest"
    ```
+   
    [Check the Snort Id here!](https://www.snort.org/search)
 
 ---
