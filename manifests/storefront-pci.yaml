@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: storefront
   labels:
-    PCI: true
+    PCI: "true"
 ---
 apiVersion: v1
 kind: Secret
@@ -31,7 +31,7 @@ spec:
       labels:
         app: backend
         fw-zone: restricted
-        PCI: true
+        PCI: "true"
     spec:
       imagePullSecrets:
       - name: tigera-pull-secret
@@ -114,7 +114,7 @@ spec:
       labels:
         app: frontend
         fw-zone: dmz
-        PCI: true
+        PCI: "true"
     spec:
       imagePullSecrets:
       - name: tigera-pull-secret
@@ -216,7 +216,7 @@ spec:
       labels:
         app: microservice1
         fw-zone: trusted
-        PCI: true
+        PCI: "true"
     spec:
       imagePullSecrets:
       - name: tigera-pull-secret
@@ -320,7 +320,7 @@ spec:
       labels:
         app: microservice2
         fw-zone: trusted
-        PCI: true
+        PCI: "true"
     spec:
       imagePullSecrets:
       - name: tigera-pull-secret
