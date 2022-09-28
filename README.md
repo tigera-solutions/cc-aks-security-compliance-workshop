@@ -825,3 +825,7 @@ that are in-scope and out-of-scope with your policy.
 - [Slack](https://calicousers.slack.com/)
 - [Github](https://github.com/tigera-solutions/)
 - [Discuss](https://discuss.projectcalico.tigera.io/)
+
+---
+
+[:up: Back to the top](/README.md#microsoft-azure-hands-on-aks-workshop-br-configuration-security-and-compliance)
