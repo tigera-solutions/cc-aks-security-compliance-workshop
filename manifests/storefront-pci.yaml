@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: storefront
   labels:
-    PCI: "true"
+    PCI: 'true'
 ---
 apiVersion: v1
 kind: Secret
