@@ -451,7 +451,7 @@ We recommend that you create a global default deny policy after you complete wri
    EOF
    ```
 
-   a. Test the access to the frontend-external service. It is blocked now.
+   a. Test the access to the frontend-external service. It is blocked now. Wait a few minutes and check the `Activity > Alerts`.
 
    ```bash
    curl -m3 $(kubectl get svc frontend-external -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -485,7 +485,9 @@ We recommend that you create a global default deny policy after you complete wri
 
    ```bash
    kubectl get globalthreatfeeds alienvault.domainthreatfeeds -ojson | jq -r '.spec.pull.http.url'
+   ```
 
+   ```bash
    kubectl get globalthreatfeeds alienvault.ipthreatfeeds -ojson | jq -r '.spec.pull.http.url'
    ```
 
