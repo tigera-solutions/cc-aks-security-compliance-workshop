@@ -606,7 +606,6 @@ with a cloud-native architecture that can dynamically enforce security policy ch
      order: 100
      selector: projectcalico.org/namespace == "storefront"
      ingress:
-
      - action: Deny
        source:
          selector: PCI != "true"
