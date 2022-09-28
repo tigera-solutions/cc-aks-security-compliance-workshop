@@ -606,13 +606,7 @@ with a cloud-native architecture that can dynamically enforce security policy ch
      order: 100
      selector: projectcalico.org/namespace == "storefront"
      ingress:
-     - action: Allow
-       protocol: UDP
-       source: {}
-       destination:
-         selector: k8s-app == "kube-dns"
-         ports:
-         - '53'
+
      - action: Deny
        source:
          selector: PCI != "true"
@@ -622,6 +616,13 @@ with a cloud-native architecture that can dynamically enforce security policy ch
        source:
        destination:
      egress:
+     - action: Allow
+       protocol: UDP
+       source: {}
+       destination:
+         selector: k8s-app == "kube-dns"
+         ports:
+         - '53'
      - action: Deny
        source:
          selector: PCI == "true"
