@@ -688,19 +688,23 @@ DPI / IDS
    ```
 
 2. Attack the nginx service
-   
+
+   [Sid 1-1002 - SERVER-IIS cmd.exe access](https://www.snort.org/rule_docs/1-1002) 
    ```bash
-   kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/ -H 'User-Agent: Mozilla/4.0' -XPOST --data-raw 'regis=1234'"
+   kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/ -H 'User-Agent: Mozilla/4.0' -XPOST --data-raw 'smk=1234'"
    ```
 
+   [Sid 1-57461 - MALWARE-BACKDOOR Perl.Backdoor.PULSECHECK variant cnc connection](https://www.snort.org/rule_docs/1-57461)
    ```bash
    kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/secid_canceltoken.cgi -H 'X-CMD: Test' -H 'X-KEY: Test' -XPOST"
    ```
 
+   [Sid 1-1002 - SERVER-IIS cmd.exe access](https://www.snort.org/rule_docs/1-1002)
    ```bash
    kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/cmd.exe"
    ```
-
+   
+   [Sid 1-2585 - SERVER-WEBAPP nessus 2.x 404 probe](https://www.snort.org/rule_docs/1-2585)  
    ```bash
    kubectl -n dev exec -t netshoot -- sh -c "curl -m2 http://nginx-svc/NessusTest"
    ```
