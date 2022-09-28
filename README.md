@@ -451,8 +451,6 @@ We recommend that you create a global default deny policy after you complete wri
    EOF
    ```
 
-
-
    a. Test the access to the frontend-external service. It is blocked now.
 
    ```bash
