@@ -604,7 +604,7 @@ with a cloud-native architecture that can dynamically enforce security policy ch
    spec:
      tier: security
      order: 400
-     selector: projectcalico.org/namespace = "storefront"
+     selector: projectcalico.org/namespace == "storefront"
      ingress:
      - action: Deny
        source:
