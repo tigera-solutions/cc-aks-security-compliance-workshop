@@ -530,7 +530,7 @@ We recommend that you create a global default deny policy after you complete wri
         egress:
         - action: Deny
           destination:
-            selector: threatfeed == "feodo"||threatfeed == "snort"
+            selector: threatfeed == "feodo"
         - action: Pass
       EOF
       ```
