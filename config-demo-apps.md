@@ -59,10 +59,10 @@
    apiVersion: projectcalico.org/v3
    kind: GlobalNetworkPolicy
    metadata:
-     name: default.allow-kube-dns
+     name: security.allow-kube-dns
    spec:
-     tier: default
-     order: 950
+     tier: security
+     order: 100
      selector: all()
      types:
      - Egress    
