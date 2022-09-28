@@ -149,10 +149,11 @@ We recommend that you create a global default deny policy after you complete wri
      selector: app == "centos"
      serviceAccountSelector: ''
      egress:
-       - action: Allow
-         protocol: TCP
-         destination:
-           selector: app == "nginx"
+     - action: Allow
+       protocol: TCP
+       destination:
+         selector: app == "nginx"
+     - action: Pass
      types:
        - Egress
    EOF
@@ -200,31 +201,30 @@ We recommend that you create a global default deny policy after you complete wri
    a. Deploy egress policy between two namespaces dev and default.
 
    ```yaml
-   # deploy policy to control centos ingress and egress
-   kubectl apply -f - <<-EOF
+   kubectl apply -f - <<-EOF   
    apiVersion: projectcalico.org/v3
    kind: NetworkPolicy
    metadata:
-     name: platform.centos-to-frontend
+     name: default.centos
      namespace: dev
    spec:
-     tier: platform
-     order: 100
+     tier: default
+     order: 800
      selector: app == "centos"
-     types:
-     - Egress
+     serviceAccountSelector: ''
      egress:
      - action: Allow
        protocol: TCP
-       source: {}
+       destination:
+         selector: app == "nginx"
+     - action: Allow
+       protocol: TCP
        destination:
          selector: app == "frontend"
-         namespaceSelector: projectcalico.org/name == "default"
-         ports:
-         - 8080
+         namespaceSelector: projectcalico.org/namespace == "default"
      - action: Pass
-       source: {}
-       destination: {}
+     types:
+       - Egress
    EOF
    ```
 
