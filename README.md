@@ -773,7 +773,7 @@ specify the use of encryption. Calico’s encryption is 6X faster than any other
 5. Apply Service, ServiceMonitor, NetworkPolicy manifests:
 
    ```bash
-   kubectl apply -f ./demo-prep/wireguard-stats.yaml
+   kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/wireguard-stats.yaml
    ```
 
 6. Disable WireGuard for the cluster
