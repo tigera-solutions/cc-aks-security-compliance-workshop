@@ -485,9 +485,6 @@ We recommend that you create a global default deny policy after you complete wri
 
    ```bash
    kubectl get globalthreatfeeds alienvault.domainthreatfeeds -ojson | jq -r '.spec.pull.http.url'
-   ```
-
-   ```bash
    kubectl get globalthreatfeeds alienvault.ipthreatfeeds -ojson | jq -r '.spec.pull.http.url'
    ```
 
