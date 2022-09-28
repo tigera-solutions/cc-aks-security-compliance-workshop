@@ -497,21 +497,21 @@ We recommend that you create a global default deny policy after you complete wri
 
    a. Deploy the feodo Threatfeed
 
-      ```yaml
-      kubectl apply -f - <<-EOF
-      apiVersion: projectcalico.org/v3
-      kind: GlobalThreatFeed
-      metadata:
-        name: feodo-tracker
-      spec:
-        pull:
-          http:
-            url: https://feodotracker.abuse.ch/downloads/ipblocklist.txt
-        globalNetworkSet:
-          labels:
-            threatfeed: feodo
-      EOF
-      ```
+       ```yaml
+       kubectl apply -f - <<-EOF
+       apiVersion: projectcalico.org/v3
+       kind: GlobalThreatFeed
+       metadata:
+         name: feodo-tracker
+       spec:
+         pull:
+           http:
+             url: https://feodotracker.abuse.ch/downloads/ipblocklist.txt
+         globalNetworkSet:
+           labels:
+             threatfeed: feodo
+       EOF
+       ```
 
    b. Deploy the policy to block traffic from and to feodo Threatfeed
 
