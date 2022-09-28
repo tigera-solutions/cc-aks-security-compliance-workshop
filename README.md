@@ -749,7 +749,7 @@ specify the use of encryption. Calico’s encryption is 6X faster than any other
 | 4.1 | Data-in-transit encryption to safeguard sensitive data | • Secure and encrypt data in transit for all covered workloads|
 
 
-1. Install WireGuard is already installed on Ubuntu nodes.
+1. On AKS, the WireGuard is already installed in Ubuntu nodes.
 
 2. Enable WireGuard for the cluster
 
