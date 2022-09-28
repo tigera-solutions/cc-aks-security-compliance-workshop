@@ -495,7 +495,7 @@ We recommend that you create a global default deny policy after you complete wri
    https://installer.calicocloud.io/feeds/v1/ips
    ```
 
-   a. Deploy the feodo Threatfeed
+   1. Deploy the feodo Threatfeed
 
       ```yaml
       kubectl apply -f - <<-EOF
@@ -513,7 +513,7 @@ We recommend that you create a global default deny policy after you complete wri
       EOF
       ```
 
-   b. Deploy the policy to block traffic from and to feodo Threatfeed
+   2. Deploy the policy to block traffic from and to feodo Threatfeed
 
       ```yaml
       kubectl apply -f - <<-EOF
@@ -535,7 +535,7 @@ We recommend that you create a global default deny policy after you complete wri
       EOF
       ```
 
-   c. Confirm and check the tracker threatfeed
+   3. Confirm and check the tracker threatfeed
    
       ```bash
       kubectl get globalthreatfeeds 
