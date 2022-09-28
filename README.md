@@ -147,7 +147,6 @@ We recommend that you create a global default deny policy after you complete wri
      tier: default
      order: 800
      selector: app == "centos"
-     serviceAccountSelector: ''
      egress:
      - action: Allow
        protocol: TCP
@@ -211,7 +210,6 @@ We recommend that you create a global default deny policy after you complete wri
      tier: default
      order: 800
      selector: app == "centos"
-     serviceAccountSelector: ''
      egress:
      - action: Allow
        protocol: TCP
