@@ -803,3 +803,25 @@ that are in-scope and out-of-scope with your policy.
 2. Explore the Compliance Reports.
 
 ![cis-benchmark](https://user-images.githubusercontent.com/104035488/192358645-ab77c305-0a9d-4242-b37f-972dc22b4d84.gif)
+
+---
+
+# Thank you!
+
+--- 
+
+**Useful links**
+
+- [Project Calico](https://www.tigera.io/project-calico/)
+- [Calico Academy - Get Calico Certified!](https://academy.tigera.io/)
+- [O’REILLY EBOOK: Kubernetes security and observability](https://www.tigera.io/lp/kubernetes-security-and-observability-ebook)
+- [Calico Users - Slack](https://slack.projectcalico.org/)
+
+**Follow us on social media**
+
+- [LinkedIn](https://www.linkedin.com/company/tigera/)
+- [Twitter](https://twitter.com/tigeraio)
+- [YouTube](https://www.youtube.com/channel/UC8uN3yhpeBeerGNwDiQbcgw/)
+- [Slack](https://calicousers.slack.com/)
+- [Github](https://github.com/tigera-solutions/)
+- [Discuss](https://discuss.projectcalico.tigera.io/)
