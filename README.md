@@ -427,6 +427,30 @@ We recommend that you create a global default deny policy after you complete wri
    EOF
    ```
 
+   e. Create a global alert for the blocked attempt from the ip-address-list to the frontend.
+
+   ```yaml
+   kubectl apply -f - <<-EOF   
+   apiVersion: projectcalico.org/v3
+   kind: GlobalAlert
+   metadata:
+     name: blocked-ips
+   spec:
+     description: "A connection attempt from a bloqued ip address."
+     summary: "[blocked-ip] ${source_ip} from ${source_name_aggr} networkset attempted to access ${dest_namespace}/${dest_name_aggr}"
+     severity: 100
+     dataSet: flows
+     period: 1m
+     lookback: 1m
+     query: '(source_name = "ip-address-list")'
+     aggregateBy: [dest_namespace, dest_name_aggr, source_name_aggr, source_ip]
+     metric: num_flows
+     condition: gt
+     threshold: 0
+   ```
+
+
+
    a. Test the access to the frontend-external service. It is blocked now.
 
    ```bash
