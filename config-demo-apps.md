@@ -59,10 +59,10 @@
    apiVersion: projectcalico.org/v3
    kind: GlobalNetworkPolicy
    metadata:
-     name: platform.allow-kube-dns
+     name: default.allow-kube-dns
    spec:
-     tier: platform
-     order: 200
+     tier: default
+     order: 950
      selector: all()
      types:
      - Egress    
@@ -75,8 +75,6 @@
            ports:
            - '53'
        - action: Pass
-         source: {}
-         destination: {}
    EOF
    ```
 
