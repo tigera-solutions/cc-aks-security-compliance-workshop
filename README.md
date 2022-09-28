@@ -444,7 +444,8 @@ We recommend that you create a global default deny policy after you complete wri
      lookback: 1m
      query: '(source_name = "ip-address-list")'
      aggregateBy: [dest_namespace, dest_name_aggr, source_name_aggr, source_ip]
-     metric: num_flows
+     field: num_flows
+     metric: sum
      condition: gt
      threshold: 0
    EOF
