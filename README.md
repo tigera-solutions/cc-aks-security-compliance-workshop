@@ -495,57 +495,58 @@ We recommend that you create a global default deny policy after you complete wri
    https://installer.calicocloud.io/feeds/v1/ips
    ```
 
-   Deploy the feodo Threatfeed
+   a. Deploy the feodo Threatfeed
 
-   ```yaml
-   kubectl apply -f - <<-EOF
-   apiVersion: projectcalico.org/v3
-   kind: GlobalThreatFeed
-   metadata:
-     name: feodo-tracker
-   spec:
-     pull:
-       http:
-         url: https://feodotracker.abuse.ch/downloads/ipblocklist.txt
-     globalNetworkSet:
-       labels:
-         threatfeed: feodo
-   EOF
-   ```
+      ```yaml
+      kubectl apply -f - <<-EOF
+      apiVersion: projectcalico.org/v3
+      kind: GlobalThreatFeed
+      metadata:
+        name: feodo-tracker
+      spec:
+        pull:
+          http:
+            url: https://feodotracker.abuse.ch/downloads/ipblocklist.txt
+        globalNetworkSet:
+          labels:
+            threatfeed: feodo
+      EOF
+      ```
 
-   Deploy the policy to block traffic from and to feodo Threatfeed
+   b. Deploy the policy to block traffic from and to feodo Threatfeed
 
-   ```yaml
-   kubectl apply -f - <<-EOF
-   apiVersion: projectcalico.org/v3
-   kind: GlobalNetworkPolicy
-   metadata:
-     name: security.block-threadfeed
-   spec:
-     tier: security
-     order: 210
-     selector: all()
-     types:
-     - Egress
-     egress:
-     - action: Deny
-       destination:
-         selector: threatfeed == "feodo"||threatfeed == "snort"
-     - action: Pass
-   EOF
-   ```
-   Confirm and check the tracker threatfeed
+      ```yaml
+      kubectl apply -f - <<-EOF
+      apiVersion: projectcalico.org/v3
+      kind: GlobalNetworkPolicy
+      metadata:
+        name: security.block-threadfeed
+      spec:
+        tier: security
+        order: 210
+        selector: all()
+        types:
+        - Egress
+        egress:
+        - action: Deny
+          destination:
+            selector: threatfeed == "feodo"||threatfeed == "snort"
+        - action: Pass
+      EOF
+      ```
+
+   c. Confirm and check the tracker threatfeed
    
-   ```bash
-   kubectl get globalthreatfeeds 
-   ```
-
-   ```bash
-   NAME                           CREATED AT
-   alienvault.domainthreatfeeds   2022-02-11T19:21:26Z
-   alienvault.ipthreatfeeds       2022-02-11T19:21:26Z
-   feodo-tracker                  2022-02-11T22:21:43Z 
-   ```
+      ```bash
+      kubectl get globalthreatfeeds 
+      ```
+   
+      ```bash
+      NAME                           CREATED AT
+      alienvault.domainthreatfeeds   2022-02-11T19:21:26Z
+      alienvault.ipthreatfeeds       2022-02-11T19:21:26Z
+      feodo-tracker                  2022-02-11T22:21:43Z 
+      ```
     
 2. Generate alerts by accessing the IP from `feodo-tracker` list. 
 
