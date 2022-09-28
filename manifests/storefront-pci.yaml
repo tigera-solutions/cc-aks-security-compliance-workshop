@@ -98,19 +98,19 @@ data:
 apiVersion:  apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: storefrontend
   namespace: storefront
   labels:
-    app: frontend
+    app: storefrontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: storefrontend
   template:
     metadata:
       labels:
-        app: frontend
+        app: storefrontend
         fw-zone: dmz
         PCI: "true"
     spec:
@@ -159,11 +159,11 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: frontend
+  name: storefrontend
   namespace: storefront
 spec:
   selector:
-    app: frontend
+    app: storefrontend
   ports:
   - protocol: TCP
     port: 80
@@ -180,7 +180,7 @@ data:
     kind: MockService
     metadata:
        namespace: storefront
-       name: frontend
+       name: storefrontend
     spec:
       imagePullSecrets:
       - name: tigera-pull-secret
