@@ -603,7 +603,7 @@ with a cloud-native architecture that can dynamically enforce security policy ch
      name: security.pci-whitelist
    spec:
      tier: security
-     order: 300
+     order: 400
      selector: projectcalico.org/namespace = "dev"
      ingress:
      - action: Deny
