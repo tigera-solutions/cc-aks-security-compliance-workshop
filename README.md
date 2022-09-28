@@ -447,6 +447,7 @@ We recommend that you create a global default deny policy after you complete wri
      metric: num_flows
      condition: gt
      threshold: 0
+   EOF
    ```
 
 
