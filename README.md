@@ -152,7 +152,6 @@ We recommend that you create a global default deny policy after you complete wri
        protocol: TCP
        destination:
          selector: app == "nginx"
-     - action: Pass
      types:
        - Egress
    EOF
