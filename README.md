@@ -199,6 +199,7 @@ We recommend that you create a global default deny policy after you complete wri
    a. Deploy egress policy between two namespaces dev and default.
 
    ```yaml
+   kubectl apply -f - <<-EOF
    apiVersion: projectcalico.org/v3
    kind: NetworkPolicy
    metadata:
