@@ -358,7 +358,7 @@ We recommend that you create a global default deny policy after you complete wri
    a. Test the access to the frontend-external service
 
    ```bash
-   curl -m3 $(kubectl get svc frontend-external -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+   curl -sI -m3 $(kubectl get svc frontend-external -ojsonpath='{.status.loadBalancer.ingress[0].ip}') | grep -i http
    ```
    
    b. Identify your workstation ip address and store it in a environment variable
@@ -435,7 +435,7 @@ We recommend that you create a global default deny policy after you complete wri
    a. Test the access to the frontend-external service. It is blocked now. Wait a few minutes and check the `Activity > Alerts`.
 
    ```bash
-   curl -m3 $(kubectl get svc frontend-external -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+   curl -sI -m3 $(kubectl get svc frontend-external -ojsonpath='{.status.loadBalancer.ingress[0].ip}') | grep -i http
    ```
 
 ---
