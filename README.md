@@ -324,16 +324,13 @@ We recommend that you create a global default deny policy after you complete wri
    spec:
      tier: security
      selector: (app == "centos" && projectcalico.org/namespace == "dev")
-     order: 200
+     order: 100
      types:
        - Egress
      egress:
      - action: Allow
        destination:
          selector: type == "allowed-dns"
-     - action: Pass
-       source: {}
-       destination: {}
    EOF
    ```
 
