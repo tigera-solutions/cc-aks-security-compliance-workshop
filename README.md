@@ -210,12 +210,12 @@ We recommend that you create a global default deny policy after you complete wri
      order: 100
      selector: app == "centos"
      egress:
-     - action: Allow
-       protocol: TCP
-       source: {}
-       destination:
-         selector: app == "frontend"
-         namespaceSelector: projectcalico.org/name == "hipstershop"
+       - action: Allow
+         protocol: TCP
+         source: {}
+         destination:
+           selector: app == "frontend"
+           namespaceSelector: projectcalico.org/name == "hipstershop"
      types:
        - Egress
    EOF
