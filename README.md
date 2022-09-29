@@ -216,6 +216,7 @@ We recommend that you create a global default deny policy after you complete wri
          destination:
            selector: app == "frontend"
            namespaceSelector: projectcalico.org/name == "default"
+       - action: Pass
      types:
        - Egress
    EOF
