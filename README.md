@@ -209,7 +209,7 @@ We recommend that you create a global default deny policy after you complete wri
      tier: platform
      order: 100
      selector: app == "centos"
-     serviceAccountSelector: ''
+     - ingress:
        - action: Allow
          protocol: TCP
          source: {}
