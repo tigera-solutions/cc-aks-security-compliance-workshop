@@ -209,13 +209,13 @@ We recommend that you create a global default deny policy after you complete wri
      tier: platform
      order: 100
      selector: app == "centos"
-     - ingress:
-       - action: Allow
-         protocol: TCP
-         source: {}
-         destination:
-           selector: app == "frontend"
-           namespaceSelector: projectcalico.org/name == "hipstershop"
+     egress:
+     - action: Allow
+       protocol: TCP
+       source: {}
+       destination:
+         selector: app == "frontend"
+         namespaceSelector: projectcalico.org/name == "hipstershop"
      types:
        - Egress
    EOF
