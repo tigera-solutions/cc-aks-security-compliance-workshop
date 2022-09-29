@@ -62,7 +62,7 @@
      name: security.allow-kube-dns
    spec:
      tier: security
-     order: 100
+     order: 200
      selector: all()
      types:
      - Egress    

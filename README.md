@@ -259,7 +259,7 @@ We recommend that you create a global default deny policy after you complete wri
    spec:
      tier: security
      selector: (app == "centos" && projectcalico.org/namespace == "dev")
-     order: 200
+     order: 100
      types:
        - Egress
      egress:
@@ -269,7 +269,6 @@ We recommend that you create a global default deny policy after you complete wri
        destination:
          domains:
          - '*.twilio.com'
-     - action: Pass
    EOF
    ```
    
