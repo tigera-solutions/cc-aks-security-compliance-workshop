@@ -223,4 +223,4 @@
    ```
 
 --- 
-[:leftwards_arrow_with_hook: Back to Main](/README.md#how-calico-supports-pci-compliance-requirements)
+[:leftwards_arrow_with_hook: Back to Main](/README.md#configure-your-cluster-and-install-demo-applications)
