@@ -811,4 +811,4 @@ that are in-scope and out-of-scope with your policy.
 
 ---
 
-[:arrow_up: Back to the top](/README.md#microsoft-azure-hands-on-aks-workshop-br-configuration-security-and-compliance)
+[:arrow_up: Back to the top](/README.md#microsoft-azure-hands-on-aks-workshop--configuration-security-and-compliance)
