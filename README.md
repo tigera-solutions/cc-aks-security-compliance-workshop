@@ -536,7 +536,7 @@ We recommend that you create a global default deny policy after you complete wri
    FIP=$(kubectl get globalnetworkset threatfeed.feodo-tracker -ojson | jq -r '.spec.nets[0]' | sed -e 's/^"//' -e 's/\/32//')
    kubectl -n dev exec -t netshoot -- sh -c "ping -c1 $FIP"
    ```
-<!---
+<!--   -->
 3. Generate alerts by accessing the IP from `alienvault.ipthreatfeeds` list. 
 
    ```bash
@@ -544,9 +544,8 @@ We recommend that you create a global default deny policy after you complete wri
    AIP=$(kubectl get globalnetworkset threatfeed.alienvault.ipthreatfeeds -ojson | jq -r '.spec.nets[0]' | sed -e 's/^"//' -e 's/"$//' -e 's/\/32//')
    kubectl -n dev exec -t netshoot -- sh -c "ping -c1 $AIP"
    ```
--->
 
-3. Confirm you are able to see the alerts in alert list. 
+4. Confirm you are able to see the alerts in alert list. 
 
 ---
 
