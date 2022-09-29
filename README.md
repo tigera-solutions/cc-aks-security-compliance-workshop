@@ -546,7 +546,7 @@ We recommend that you create a global default deny policy after you complete wri
    ```
 -->
 
-4. Confirm you are able to see the alerts in alert list. 
+3. Confirm you are able to see the alerts in alert list. 
 
 ---
 
