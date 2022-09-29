@@ -763,6 +763,8 @@ specify the use of encryption. Calico’s encryption is 6X faster than any other
    kubectl patch felixconfiguration default --type='merge' -p '{"spec":{"wireguardEnabled":false}}'
    ```
 
+---
+
 ## Compliance Reports
 
 Continuous compliance means employing a continual audit that shows what traffic was allowed in your infrastructure,
