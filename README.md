@@ -417,8 +417,8 @@ We recommend that you create a global default deny policy after you complete wri
    metadata:
      name: blocked-ips
    spec:
-     summary: "A connection attempt from a blocked ip address just happened."
-     description: "[blocked-ip] ${source_ip} from ${source_name_aggr} networkset attempted to access ${dest_namespace}/${dest_name_aggr}"
+     description: "A connection attempt from a blocked ip address just happened."
+     summary: "[blocked-ip] ${source_ip} from ${source_name_aggr} networkset attempted to access ${dest_namespace}/${dest_name_aggr}"
      severity: 100
      dataSet: flows
      period: 1m
@@ -536,7 +536,7 @@ We recommend that you create a global default deny policy after you complete wri
    FIP=$(kubectl get globalnetworkset threatfeed.feodo-tracker -ojson | jq -r '.spec.nets[0]' | sed -e 's/^"//' -e 's/\/32//')
    kubectl -n dev exec -t netshoot -- sh -c "ping -c1 $FIP"
    ```
-
+<!---
 3. Generate alerts by accessing the IP from `alienvault.ipthreatfeeds` list. 
 
    ```bash
@@ -544,6 +544,7 @@ We recommend that you create a global default deny policy after you complete wri
    AIP=$(kubectl get globalnetworkset threatfeed.alienvault.ipthreatfeeds -ojson | jq -r '.spec.nets[0]' | sed -e 's/^"//' -e 's/"$//' -e 's/\/32//')
    kubectl -n dev exec -t netshoot -- sh -c "ping -c1 $AIP"
    ```
+-->
 
 4. Confirm you are able to see the alerts in alert list. 
 
