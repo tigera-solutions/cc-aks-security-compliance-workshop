@@ -18,23 +18,6 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: centos
-  namespace: dev
-spec:
-  podSelector:
-    matchLabels:
-      app: centos
-  egress:
-    - to:
-      - podSelector:
-          matchLabels:
-            app: nginx
-  policyTypes:
-  - Egress
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
   name: netshoot
   namespace: dev
 spec:
