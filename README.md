@@ -273,8 +273,6 @@ We recommend that you create a global default deny policy after you complete wri
          domains:
          - '*.twilio.com'
      - action: Pass
-       source: {}
-       destination: {}
    EOF
    ```
    
