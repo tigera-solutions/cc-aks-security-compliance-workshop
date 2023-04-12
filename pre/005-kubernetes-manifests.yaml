@@ -505,8 +505,9 @@ spec:
             - /bin/sh
             - -c
             - apt-get update && apt install curl -y
-          initialDelaySeconds: 15
-          periodSeconds: 5 
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 30
         env:
         - name: FRONTEND_ADDR
           value: "frontend:80"
