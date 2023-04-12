@@ -413,9 +413,6 @@ We recommend that you create a global default deny policy after you complete wri
        source:
          selector: type == "blocked-ips"
        destination: {}
-     - action: Pass
-       source: {}
-       destination: {}
    EOF
    ```
 
@@ -523,7 +520,6 @@ We recommend that you create a global default deny policy after you complete wri
         - action: Deny
           destination:
             selector: threatfeed == "feodo"
-        - action: Pass
       EOF
       ```
 
@@ -603,25 +599,12 @@ with a cloud-native architecture that can dynamically enforce security policy ch
          selector: PCI != "true"
        destination:
          selector: PCI == "true"
-     - action: Pass
-       source:
-       destination:
      egress:
-     - action: Allow
-       protocol: UDP
-       source: {}
-       destination:
-         selector: k8s-app == "kube-dns"
-         ports:
-         - '53'
      - action: Deny
        source:
          selector: PCI == "true"
        destination:
          selector: PCI != "true"
-     - action: Pass
-       source:
-       destination:
      types:
      - Ingress
      - Egress
