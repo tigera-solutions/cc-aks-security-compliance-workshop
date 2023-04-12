@@ -85,13 +85,13 @@
    Deploy the dev app stack
 
    ```bash
-   kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/dev-app-manifest.yaml
+   kubectl apply -f https://raw.githubusercontent.com/tigera-solutions/cc-aks-security-compliance-workshop/main/manifests/dev-app-manifest.yaml
    ```
    
    Deploy the Online Boutique app stack
 
    ```bash
-   kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/kubernetes-manifests.yaml
+   kubectl apply -f https://raw.githubusercontent.com/tigera-solutions/cc-aks-security-compliance-workshop/main/manifests/kubernetes-manifests.yaml
    ```
 
 2. Install curl in the loadgenerator.
