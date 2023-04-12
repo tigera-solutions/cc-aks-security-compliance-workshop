@@ -37,8 +37,6 @@ Configure Calico parameters for this workshop, and install and configure demo ap
    kubectl apply -f pre
    ```
 
-# - [Configure your cluster and install demo applications](./config-demo-apps.md)
-
 ---
 
 # How Calico supports compliance requirements
