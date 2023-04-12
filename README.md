@@ -600,6 +600,13 @@ with a cloud-native architecture that can dynamically enforce security policy ch
        destination:
          selector: PCI == "true"
      egress:
+     - action: Allow
+       protocol: UDP
+       source: {}
+       destination:
+         selector: k8s-app == "kube-dns"
+         ports:
+         - '53'
      - action: Deny
        source:
          selector: PCI == "true"
