@@ -22,10 +22,10 @@
    az aks create \
      --resource-group $RESOURCE_GROUP \
      --name $CLUSTER_NAME \
-     --kubernetes-version 1.23 \
+     --kubernetes-version 1.25 \
      --location $LOCATION \
-     --node-count 3 \
-     --node-vm-size Standard_D2s_v3 \
+     --node-count 2 \
+     --node-vm-size Standard_B4ms \
      --max-pods 120 \
      --generate-ssh-keys \
      --network-plugin azure
