@@ -1,0 +1,47 @@
+apiVersion: projectcalico.org/v3
+kind: GlobalReport
+metadata:
+  name: cluster-cis-results
+  labels:
+    deployment: production
+spec:
+  reportType: cis-benchmark
+  schedule: '*/30 * * * *'
+  cis:
+    highThreshold: 100
+    medThreshold: 50
+    includeUnscoredTests: true
+    numFailedTests: 5
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalReport
+metadata:
+  name: cluster-inventory
+spec:
+  reportType: inventory
+  schedule: '*/30 * * * *'
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalReport
+metadata:
+  name: cluster-network-access
+spec:
+  reportType: network-access
+  schedule: '*/30 * * * *'
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalReport
+metadata:
+  name: cluster-policy-audit
+spec:
+  reportType: policy-audit
+  schedule:  '*/30 * * * *'
+  endpoints:
+    serviceAccounts:
+      names: 
+        - regis
+        - default
+    namespaces:
+      names:
+        - dev
+        - default

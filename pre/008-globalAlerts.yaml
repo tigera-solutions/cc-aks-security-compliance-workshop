@@ -1,0 +1,76 @@
+apiVersion: projectcalico.org/v3
+kind: GlobalAlert
+metadata:
+  name: dns.unsanctioned.access
+spec:
+  description: "Pod attempted to access google.com domain"
+  summary: "[dns] pod ${client_namespace}/${client_name_aggr} attempted to access '${qname}'"
+  severity: 100
+  dataSet: dns
+  period: 1m
+  lookback: 1m
+  query: '(qname = "www.google.com" OR qname = "google.com")'
+  aggregateBy: [client_namespace, client_name_aggr, qname]
+  metric: count
+  condition: gt
+  threshold: 0
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalAlert
+metadata:
+  name: dns.suspicious-dns-query
+spec:
+  description: Generate alerts for all DNS lookups not in the domain set
+  summary: "[IoC] suspcious dns query from pod ${client_namespace}/${client_name_aggr} for '${qname}'"
+  severity: 100
+  dataSet: dns
+  period: 1m
+  lookback: 5m
+  query: qname NOTIN ${domains} AND client_namespace IN ${namespaces}
+  aggregateBy: [client_namespace, client_name_aggr, qname]
+  substitutions:
+    - name: domains
+      values:
+        - "*cluster.local"
+        - "*ec2.internal"
+        - "*.in-addr.arpa"
+        - "localhost"
+    - name: namespaces
+      values:
+        - "java-app"
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalAlert
+metadata:
+  name: security.ofac-sanctions
+spec:
+  description: "Alerts when pods try to access OFAC sanctioned sites"
+  summary: "[flows] [ofac-sanction] ${source_namespace}/${source_name_aggr} has tried to access ${dest_ip}"
+  severity: 100
+  period: 1m
+  lookback: 1m
+  dataSet: flows
+  query: dest_name_aggr="threatfeed.ofac-sanctions"
+  aggregateBy: [source_namespace, source_name_aggr, dest_name_aggr, dest_ip]
+  field: num_flows
+  metric: sum
+  condition: gt
+  threshold: 0
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalAlert
+metadata:
+  name: network.lateral.access
+spec:
+  description: "Alerts when pods with a specific label (security=strict) accessed by other workloads from other namespaces"
+  summary: "[flows] [lateral movement] ${source_namespace}/${source_name_aggr} has accessed ${dest_namespace}/${dest_name_aggr} with label security=strict"
+  severity: 100
+  period: 1m
+  lookback: 1m
+  dataSet: flows
+  query: '("dest_labels.labels"="security=strict" AND "dest_namespace"="dev") AND "source_namespace"!="dev" AND "proto"="tcp" AND (("action"="allow" AND ("reporter"="dst" OR    "reporter"="src")) OR ("action"="deny" AND "reporter"="src"))'
+  aggregateBy: [source_namespace, source_name_aggr, dest_namespace, dest_name_aggr]
+  field: num_flows
+  metric: sum
+  condition: gt
+  threshold: 0

@@ -1,0 +1,11 @@
+apiVersion: projectcalico.org/v3
+kind: GlobalThreatFeed
+metadata:
+  name: ofac-sanctions
+spec:
+  pull:
+    http:
+      url: http://tigera.rocks/ofac-sanctions-ipblocklist.txt 
+  globalNetworkSet:
+    labels:
+      threatfeed: ofac

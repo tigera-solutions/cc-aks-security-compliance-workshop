@@ -1,0 +1,60 @@
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: security.quarantine
+spec:
+  tier: security
+  order: 100
+  selector: quarantine == "true"
+  ingress:
+  - action: Log
+    source: {}
+    destination: {}
+  - action: Deny
+    source: {}
+    destination: {}
+  egress:
+  - action: Log
+    source: {}
+    destination: {}
+  - action: Deny
+    source: {}
+    destination: {}
+  types:
+  - Ingress
+  - Egress
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: security.allow-kube-dns
+spec:
+  tier: security
+  order: 200
+  selector: all()
+  types:
+  - Egress    
+  egress:
+    - action: Allow
+      protocol: UDP
+      source: {}
+      destination:
+        selector: k8s-app == "kube-dns"
+        ports:
+        - '53'
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: security.ofac-sanctions
+spec:
+  tier: security
+  order: 300
+  selector: all()
+  types:
+  - Egress
+  egress:
+  - action: Deny
+    destination:
+      selector: threatfeed == "ofac"
+  - action: Pass
