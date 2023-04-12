@@ -24,7 +24,20 @@ If you don't have an AKS cluster created for this workshop, we recommend you cre
 
 Configure Calico parameters for this workshop, and install and configure demo applications.
 
-- [Configure your cluster and install demo applications](./config-demo-apps.md)
+1. Clone this repository and change directory to it.
+   
+   ```bash
+   git clone https://github.com/tigera-solutions/cc-aks-security-compliance-workshop.git && \
+   cd cc-aks-security-compliance-workshop
+   ```
+
+2. Apply the yamls in the `pre` directory. Those yamls will setup the context for this workshop.
+
+   ```bash
+   kubectl apply -f pre
+   ```
+
+# - [Configure your cluster and install demo applications](./config-demo-apps.md)
 
 ---
 
@@ -232,7 +245,7 @@ We recommend that you create a global default deny policy after you complete wri
    Apply the policies to allow the microservices to communicate with each other.
 
    ```bash
-   kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/east-west-traffic.yaml
+   kubectl apply -f manifests/east-west-traffic.yaml
    ```
 
 3. Use the Calico Cloud GUI to enforce the default-deny staged policy. After enforcing a staged policy, it takes effect immediatelly. The default-deny policy will start to actually deny traffic.
@@ -565,7 +578,7 @@ with a cloud-native architecture that can dynamically enforce security policy ch
 1. For the microsegmentation deploy a new example application
 
    ```bash
-   kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/storefront-pci.yaml
+   kubectl apply -f manifests/storefront-pci.yaml
    ```
 
 2. Verify that all the workloads has the label `PCI=true`.
@@ -754,7 +767,7 @@ specify the use of encryption. Calico’s encryption is 6X faster than any other
 5. Apply Service, ServiceMonitor, NetworkPolicy manifests:
 
    ```bash
-   kubectl apply -f https://raw.githubusercontent.com/regismartins/cc-aks-security-compliance-workshop/main/manifests/wireguard-stats.yaml
+   kubectl apply -f manifests/wireguard-stats.yaml
    ```
 
 6. Disable WireGuard for the cluster
