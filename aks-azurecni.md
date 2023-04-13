@@ -50,7 +50,12 @@
    ```bash
    VMSSGROUP=$(az vmss list --output table | grep -i $CLUSTER_NAME | awk -F ' ' '{print $2}')
    VMSSNAME=$(az vmss list --output table | grep -i $CLUSTER_NAME  | awk -F ' ' '{print $1}')
-   az vmss run-command invoke -g $VMSSGROUP -n $VMSSNAME --scripts "cat /etc/cni/net.d/*" --command-id RunShellScript --instance-id 0 --query 'value[0].message'
+   az vmss run-command invoke -g $VMSSGROUP -n $VMSSNAME \
+     --scripts "cat /etc/cni/net.d/*" \
+     --command-id RunShellScript \
+     --instance-id 0 \
+     --output table \
+     --query 'value[0].message'
    ```
    
    > output should contain "mode": "transparent"
