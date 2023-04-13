@@ -126,7 +126,7 @@ We recommend that you create a global default deny policy after you complete wri
      name: default-deny
    spec:
      order: 2000
-     selector: "projectcalico.org/namespace in {'dev','default'}"
+     selector: "projectcalico.org/namespace in {'dev','default','storefront'}"
      types:
      - Ingress
      - Egress
