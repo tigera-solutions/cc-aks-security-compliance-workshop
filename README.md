@@ -75,7 +75,7 @@ Connect to Calico Cloud GUI. From the menu select `Service Graph > Flow Visualiz
 
 | PCI Control # | Requirements| How Calico meets this requirements |
 | --- | --- | --- |
-| 7.1, 7.2 | Restrict access to cardholder data by business need to know | • Use zero trust security features to implement a default-deny model (access to all data services should be specifically allowed; everything else should be denied)<br>• Follow a zero trust security model and implement least-privilege access (all processes should only be able to access information necessary for their legitimate purpose)
+| 7.1, 7.2 | Restrict access to cardholder data by business need-to-know | • Use zero trust security features to implement a default-deny model (access to all data services should be specifically allowed; everything else should be denied)<br>• Follow a zero trust security model and implement least-privilege access (all processes should only be able to access information necessary for their legitimate purpose)
 
 A global default deny policy ensures that unwanted traffic (ingress and egress) is denied by default. Pods without policy (or incorrect policy) are not allowed traffic until appropriate network policy is defined. Although the staging policy tool will help you find incorrect and missing policy, a global deny helps mitigate against other lateral malicious attacks.
 
