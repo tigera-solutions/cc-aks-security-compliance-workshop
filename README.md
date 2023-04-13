@@ -591,30 +591,23 @@ with a cloud-native architecture that can dynamically enforce security policy ch
      name: security.pci-whitelist
    spec:
      tier: security
-     order: 100
-     selector: projectcalico.org/namespace == "storefront"
+     order: 120
+     namespaceSelector: kubernetes.io/metadata.name == "storefront"
      ingress:
-     - action: Deny
-       source:
-         selector: PCI != "true"
-       destination:
-         selector: PCI == "true"
+       - action: Allow
+         source:
+           selector: PCI == "true"
+         destination:
+           selector: PCI == "true"
      egress:
-     - action: Allow
-       protocol: UDP
-       source: {}
-       destination:
-         selector: k8s-app == "kube-dns"
-         ports:
-         - '53'
-     - action: Deny
-       source:
-         selector: PCI == "true"
-       destination:
-         selector: PCI != "true"
+       - action: Allow
+         source:
+           selector: PCI == "true"
+         destination:
+           selector: PCI == "true"
      types:
-     - Ingress
-     - Egress
+       - Ingress
+       - Egress
    EOF
    ```
 
