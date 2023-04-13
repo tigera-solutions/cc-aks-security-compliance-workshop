@@ -133,13 +133,6 @@ We recommend that you create a global default deny policy after you complete wri
    EOF
    ```
 
-   You should be able to view the potential affect of the staged default-deny policy if you navigate to the Dashboard view in the Enterprise Manager UI and look at the Packets by Policy histogram.
-
-   ```bash
-   # make a request across namespaces and view Packets by Policy histogram, the expected result is "HTTP/1.1 200 OK"
-   for i in {1..5}; do kubectl -n dev exec -t centos -- sh -c 'curl -m3 -sI http://frontend.default 2>/dev/null | grep -i http'; sleep 2; done
-   ```
-
    The staged policy does not affect the traffic directly but allows you to view the policy impact if it were to be enforced. You can see the deny traffic in staged policy.
 
 
